@@ -1,4 +1,4 @@
-package ftbconv;
+package com.tazz.ftbconv;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -12,13 +12,12 @@ import dev.ftb.mods.ftbquests.quest.*;
 import dev.ftb.mods.ftbquests.quest.loot.RewardTable;
 import dev.ftb.mods.ftbquests.quest.reward.Reward;
 import dev.ftb.mods.ftbquests.quest.task.Task;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.LanguageInfo;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -39,7 +38,7 @@ import java.util.regex.Pattern;
 
 import static net.minecraft.commands.Commands.literal;
 
-@Mod( "ftbconv" )
+@Mod("com/tazz/ftbconv")
 public class FtbLangConvertMod{
 	public FtbLangConvertMod(){
 		MinecraftForge.EVENT_BUS.register(this);
@@ -115,8 +114,8 @@ public class FtbLangConvertMod{
 						}
 					}
 
-					for(int i1 = 0; i1 < chapter.quests.size(); i1++){
-						Quest quest = chapter.quests.get(i1);
+					for(int i1 = 0; i1 < chapter.getQuests().size(); i1++){
+						Quest quest = chapter.getQuests().get(i1);
 
 						if(!quest.title.isBlank()){
 							transKeys.put(prefix + ".quest." + (i1+1) + ".title", quest.title);
@@ -203,7 +202,8 @@ public class FtbLangConvertMod{
 					saveLang(transKeys, "en_us", transFiles);
 				}
 
-				Ctx.getSource().getPlayerOrException().sendMessage(new TextComponent("FTB quests files exported to: " + parent.getAbsolutePath()), Util.NIL_UUID);
+//				Ctx.getSource().getPlayerOrException().displayClientMessage(Component.literal("FTB quests files exported to: " + parent.getAbsolutePath()), Util.NIL_UUID);
+				Ctx.getSource().getPlayerOrException().displayClientMessage(Component.literal("FTB quests files exported to: " + parent.getAbsolutePath()), true);
 
 			}catch(Exception e){
 				e.printStackTrace();
