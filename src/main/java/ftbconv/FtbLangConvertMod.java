@@ -1,4 +1,4 @@
-package com.tazz.ftbconv;
+package ftbconv;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -25,6 +25,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,8 +40,10 @@ import java.util.regex.Pattern;
 
 import static net.minecraft.commands.Commands.literal;
 
-@Mod("com/tazz/ftbconv")
+@Mod("tazz-ftb-quest-localization")
 public class FtbLangConvertMod{
+	private static final Logger log = LoggerFactory.getLogger(FtbLangConvertMod.class);
+
 	public FtbLangConvertMod(){
 		MinecraftForge.EVENT_BUS.register(this);
 	}
@@ -153,7 +157,8 @@ public class FtbLangConvertMod{
 										desc = desc.replace(matcher.group(0), "");
 										descList.add(matcher.group(0));
 									}
-								}else{
+								}
+								else{
 									if(desc.isBlank()){
 										joiner.add("\n");
 									}else{

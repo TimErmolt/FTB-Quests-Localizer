@@ -1,4 +1,4 @@
-
+modLoader="javafml"
 loaderVersion="${loader_version_range}"
 license="${mod_license}"
 [[mods]]
@@ -9,13 +9,18 @@ credits="Bello" #optional
 authors="${mod_authors}" #optional
 displayTest="IGNORE_ALL_VERSION" # MATCH_VERSION is the default if nothing is specified (#optional)
 description='''${mod_description}'''
-modId="forge" #mandatory
-mandatory=true #mandatory
-versionRange="${forge_version_range}" #mandatory
+
+[[dependencies.ftbconv]]
+modId="forge"
+mandatory=true
+versionRange="${loader_version_range}"
 ordering="NONE"
 side="BOTH"
+
+[[dependencies.ftbconv]]
 modId="minecraft"
 mandatory=true
-versionRange="${minecraft_version_range}"
+versionRange="[1.19.0,1.20)"
 ordering="NONE"
 side="BOTH"
+
