@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
 
 import static net.minecraft.commands.Commands.literal;
 
-@Mod("tazz-ftb-quest-localization")
+@Mod("ftbquestlocalization")
 public class FtbLangConvertMod{
 	private static final Logger log = LoggerFactory.getLogger(FtbLangConvertMod.class);
 
