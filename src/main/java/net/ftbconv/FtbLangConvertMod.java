@@ -21,6 +21,7 @@ public class FtbLangConvertMod{
 	public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 	public FtbLangConvertMod(){
+		MinecraftForge.EVENT_BUS.addListener(ModEvents::onCommandsRegister);
 		}
 
 }

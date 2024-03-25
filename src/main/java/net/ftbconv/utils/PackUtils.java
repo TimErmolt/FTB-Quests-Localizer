@@ -2,6 +2,10 @@ package net.ftbconv.utils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Function;
 import java.util.zip.*;
 import com.google.gson.*;
 import org.apache.commons.io.FileUtils;
@@ -55,6 +59,13 @@ public class PackUtils {
         packObject.add("pack", packMeta);
         return packObject;
 
+    }
+    public static <T, R> List<R> map(Collection<T> list, Function<T, R> function) {
+        List<R> l = new ArrayList<>(list.size() + 1);
+        for (T t : list) {
+            l.add(function.apply(t));
+        }
+        return l;
     }
 
 }

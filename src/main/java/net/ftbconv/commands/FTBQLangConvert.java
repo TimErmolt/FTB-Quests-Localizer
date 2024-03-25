@@ -1,11 +1,15 @@
 package net.ftbconv.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import dev.ftb.mods.ftbquests.api.FTBQuestsAPI;
 import dev.ftb.mods.ftbquests.quest.BaseQuestFile;
 import net.ftbconv.FtbLangConvertMod;
 import net.ftbconv.utils.Handler;
 import net.ftbconv.utils.PackUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.main.GameConfig;
+import net.minecraft.client.resources.language.LanguageInfo;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -15,16 +19,20 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Locale;
 import java.util.TreeMap;
 
 import static net.ftbconv.utils.Constants.PackMCMeta.*;
+import static org.openjdk.nashorn.internal.objects.NativeArray.map;
 
 public class FTBQLangConvert {
 
     public FTBQLangConvert(CommandDispatcher<CommandSourceStack> dispatcher) {
 
         dispatcher.register(Commands.literal("ftblang")
+                                .then(Commands.argument("lang", StringArgumentType.word())
+
 //                .requires(s->s.getServer() != null && s.getServer().isSingleplayer() || s.hasPermission(2))
                         .executes(ctx ->{
                             try{
@@ -71,6 +79,7 @@ public class FTBQLangConvert {
                             return 1;
 
                         })
+                                )
 
         );
 
@@ -80,5 +89,9 @@ public class FTBQLangConvert {
         File fe = new File(parent, lang.toLowerCase(Locale.ROOT) + ".json");
         FileUtils.write(fe, FtbLangConvertMod.gson.toJson(transKeys), StandardCharsets.UTF_8);
         PackUtils.createResourcePack(fe, FMLPaths.GAMEDIR.get().toFile()+"\\FTBLang\\FTB Quests Localization Keys.zip");
+    }
+    static List<Locale> getAllLocales() {
+        return PackUtils.map(Minecraft.getInstance().getLanguageManager().getLanguages().entrySet(), entry ->
+                new Locale(entry.getKey()));
     }
 }
