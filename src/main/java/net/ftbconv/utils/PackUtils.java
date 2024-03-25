@@ -1,4 +1,4 @@
-package ftbconv;
+package net.ftbconv.utils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -6,16 +6,14 @@ import java.util.zip.*;
 import com.google.gson.*;
 import org.apache.commons.io.FileUtils;
 
-import static ftbconv.Constants.PackMCMeta.*;
-
 public class PackUtils {
         public static void createResourcePack(File file, String outputName) throws IOException {
 
             String zipFileName = outputName;
-            JsonObject packObject = generatePackMcmeta(DESCRIPTION, PACKFORMAT);
+            JsonObject packObject = generatePackMcmeta(Constants.PackMCMeta.DESCRIPTION, Constants.PackMCMeta.PACKFORMAT);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String jsonOutput = gson.toJson(packObject);
-            File packMcMeta = new File(FILEPATH);
+            File packMcMeta = new File(Constants.PackMCMeta.FILEPATH);
             FileUtils.write(packMcMeta, jsonOutput.toString(), StandardCharsets.UTF_8);
 
             try (ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(zipFileName))) {
@@ -58,6 +56,7 @@ public class PackUtils {
         return packObject;
 
     }
+
 }
 
 

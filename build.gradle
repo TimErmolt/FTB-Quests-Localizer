@@ -149,13 +149,18 @@ dependencies {
     // The group id is ignored when searching -- in this case, it is "blank"
     // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
 //
-    implementation fg.deobf("curse.maven:ftb-quests-forge-289412:5060506")
-    implementation fg.deobf("curse.maven:ftb-xmod-forge-889915:4857341")
-    implementation fg.deobf("curse.maven:architectury-api-419699:5137942")
-    implementation fg.deobf("curse.maven:ftb-library-forge-404465:4661834")
-    implementation fg.deobf("curse.maven:ftb-teams-forge-404468:4611938")
-    implementation fg.deobf("curse.maven:item-filters-309674:4553326")
+//    implementation fg.deobf("curse.maven:ftb-quests-forge-289412:5060506")
+//    implementation fg.deobf("curse.maven:ftb-xmod-forge-889915:4857341")
+//    implementation fg.deobf("curse.maven:architectury-api-419699:5137942")
+//    implementation fg.deobf("curse.maven:ftb-library-forge-404465:4661834")
+//    implementation fg.deobf("curse.maven:ftb-teams-forge-404468:4611938")
+//    implementation fg.deobf("curse.maven:item-filters-309674:4553326")
 
+    implementation fg.deobf("curse.maven:ftb-library-forge-404465:5051953")
+    implementation fg.deobf("curse.maven:ftb-teams-forge-404468:5176343")
+    implementation fg.deobf("curse.maven:ftb-quests-forge-289412:5192381")
+    implementation fg.deobf("curse.maven:ftb-xmod-compat-889915:4932157")
+    implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
 
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
