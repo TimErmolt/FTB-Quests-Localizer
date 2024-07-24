@@ -1,12 +1,14 @@
 package net.ftbconv.utils;
 
 import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 import dev.ftb.mods.ftbquests.quest.*;
 import dev.ftb.mods.ftbquests.quest.loot.RewardTable;
 import dev.ftb.mods.ftbquests.quest.reward.Reward;
 import dev.ftb.mods.ftbquests.quest.task.Task;
 import dev.ftb.mods.ftbquests.util.TextUtils;
 import net.ftbconv.FtbLangConvertMod;
+import net.minecraft.Util;
 import net.minecraft.network.chat.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,13 +176,14 @@ public class Handler {
                     ClickEvent clickEvent = style.getClickEvent();
                     if(clickEvent != null){
                         String clickEventValue = clickEvent.getValue();
-                        String clickEventAction = clickEvent.getAction().getName();
+                        String clickEventAction = clickEvent.getAction().getSerializedName();
                         jsonStringBuilder.append("\"clickEvent\":{\"action\":\"").append(clickEventAction).append("\",\"value\":\"").append(clickEventValue).append("\"},");
                     }
                     HoverEvent hoverEvent = style.getHoverEvent();
                     if(hoverEvent != null){
-                        String hoverEventAction = hoverEvent.getAction().getName();
-                        JsonObject hoverEventJSON = hoverEvent.serialize();
+                        String hoverEventAction = hoverEvent.getAction().getSerializedName();
+                        //TODO: Check if this is the correct way to get the JsonObject from the CODEC
+                        JsonObject hoverEventJSON = Util.getOrThrow(HoverEvent.CODEC.encodeStart(JsonOps.INSTANCE, hoverEvent), IllegalStateException::new).getAsJsonObject();
                         JsonObject hoverValue = hoverEventJSON.get("contents").getAsJsonObject();
 
                         String hoverText = hoverValue.get("text").getAsString();

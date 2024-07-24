@@ -7,9 +7,9 @@ import net.ftbconv.events.ModEvents;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.fml.common.Mod;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ public class FtbLangConvertMod{
 	public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 	public FtbLangConvertMod(){
-		MinecraftForge.EVENT_BUS.addListener(ModEvents::onCommandsRegister);
+		NeoForge.EVENT_BUS.addListener(ModEvents::onCommandsRegister);
 		}
 
 }

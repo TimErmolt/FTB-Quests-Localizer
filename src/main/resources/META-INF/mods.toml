@@ -7,19 +7,18 @@ version="${mod_version}" #mandatory
 displayName="${mod_name}" #mandatory
 credits="Bello" #optional
 authors="${mod_authors}" #optional
-displayTest="IGNORE_ALL_VERSION" # MATCH_VERSION is the default if nothing is specified (#optional)
 description='''${mod_description}'''
 
 [[dependencies.ftbquestlocalization]]
-modId="forge"
-mandatory=true
-versionRange="${loader_version_range}"
+modId="neoforge"
+type="required"
+versionRange="${neo_version_range}"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.ftbquestlocalization]]
 modId="minecraft"
-mandatory=true
+type="required"
 versionRange="${minecraft_version_range}"
 ordering="NONE"
 side="BOTH"

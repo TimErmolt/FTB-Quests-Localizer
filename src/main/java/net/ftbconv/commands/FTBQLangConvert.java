@@ -8,12 +8,10 @@ import net.ftbconv.FtbLangConvertMod;
 import net.ftbconv.utils.Handler;
 import net.ftbconv.utils.PackUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.main.GameConfig;
-import net.minecraft.client.resources.language.LanguageInfo;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.fml.loading.FMLPaths;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -24,7 +22,6 @@ import java.util.Locale;
 import java.util.TreeMap;
 
 import static net.ftbconv.utils.Constants.PackMCMeta.*;
-import static org.openjdk.nashorn.internal.objects.NativeArray.map;
 
 public class FTBQLangConvert {
 
