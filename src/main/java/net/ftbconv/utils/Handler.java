@@ -81,7 +81,7 @@ public class Handler {
             counter++;
             String textKey = prefix + ".task." + counter + ".title";
             transKeys.put(textKey, task.getRawTitle());
-            descList.add("{"+textKey+"}");
+            task.setRawTitle("{"+textKey+"}");
         });
         counter = 0;
 
@@ -172,8 +172,22 @@ public class Handler {
                     if(color != null){
                         jsonStringBuilder.append("\"color\":\"").append(color).append("\",");
                     }
-
-                    String textKey = prefix + ".description." + counter + ".style." + styleInt;
+                    if (style.isUnderlined()){
+                        jsonStringBuilder.append("\"underlined\":"+ 1).append(",");
+                    }
+                    if (style.isStrikethrough()){
+                        jsonStringBuilder.append("\"strikethrough\":"+ 1).append(",");
+                    }
+                    if (style.isBold()){
+                        jsonStringBuilder.append("\"bold\":"+ 1).append(",");
+                    }
+                    if (style.isItalic()){
+                        jsonStringBuilder.append("\"italic\":"+ 1).append(",");
+                    }
+                    if (style.isObfuscated()){
+                        jsonStringBuilder.append("\"obfuscated\":"+ 1).append(",");
+                    }
+                    String textKey = prefix + ".rich_description." + counter + ".style." + styleInt;
                     transKeys.put(textKey, text);
                     jsonStringBuilder.append("\"translate\":\"").append(textKey).append("\",");
 
@@ -182,7 +196,7 @@ public class Handler {
                     if(clickEvent != null){
                         String clickEventValue = clickEvent.getValue();
                         String clickEventAction = clickEvent.getAction().getSerializedName();
-                        jsonStringBuilder.append("\"clickEvent\":{\"action\":\"").append(clickEventAction).append("\",\"value\":\"").append(clickEventValue).append("\"},");
+                        jsonStringBuilder.append("\"clickEvent\":{\"action\":\"").append(clickEventAction).append("\",\"value\":\"").append(clickEventValue).append("\"}},");
                     }
                     HoverEvent hoverEvent = style.getHoverEvent();
                     if(hoverEvent != null){
@@ -192,7 +206,7 @@ public class Handler {
                         JsonObject hoverValue = hoverEventJSON.get("contents").getAsJsonObject();
 
                         String hoverText = hoverValue.get("text").getAsString();
-                        textKey = prefix + ".description" + ".style." + styleInt + ".hover.text." + counter;
+                        textKey = prefix + ".rich_description" + ".style." + styleInt + ".hover.text." + counter;
                         String hoverString = "\"hoverEvent\":{\"action\":\"" + hoverEventAction + "\",\"contents\":{\"translate\":\"" + textKey +"\"";
                         transKeys.put(textKey, hoverText);
 
@@ -205,10 +219,9 @@ public class Handler {
                     styleInt++;
                 }
                 else{
-                    String textKey = prefix + ".description." + counter;
+                    String textKey = prefix + ".rich_description." + counter;
                     transKeys.put(textKey, text);
                     jsonStringBuilder.append("{\"translate\":\"").append(textKey).append("\"},");
-
                 }
             }
             jsonString = jsonStringBuilder.toString();
