@@ -40,8 +40,8 @@ public class Handler {
     public void handleRewardTables(List<RewardTable> rewardTables){
         rewardTables.forEach(rewardTable -> {
             counter++;
-            transKeys.put("loot_table."+counter, rewardTable.getRawTitle());
-            rewardTable.setRawTitle("{" + "loot_table." + counter + "}");
+            transKeys.put("ftbquests.loot_table.title"+counter, rewardTable.getRawTitle());
+            rewardTable.setRawTitle("{" + "ftbquests.loot_table.title" + counter + "}");
         });
         counter = 0;
     }
@@ -49,8 +49,8 @@ public class Handler {
     public void handleChapterGroup(ChapterGroup chapterGroup){
         if(chapterGroup.getTitle() != null){
             if (!chapterGroup.getRawTitle().isEmpty()){
-                transKeys.put("category." + counter, chapterGroup.getRawTitle());
-                chapterGroup.setRawTitle("{" + "category." + counter + "}");
+                transKeys.put("ftbquests.chapter_groups.title" + counter, chapterGroup.getRawTitle());
+                chapterGroup.setRawTitle("{" + "ftbquests.chapter_groups.title" + counter + "}");
                 counter++;
             }
         }
@@ -58,7 +58,7 @@ public class Handler {
     }
 
     public void handleChapter(Chapter chapter){
-        prefix = "chapter." + chapters;
+        prefix = "ftbquests.chapter."+chapter.getFilename();
         if(chapter.getTitle() != null){
             transKeys.put(prefix + ".title", chapter.getRawTitle());
             chapter.setRawTitle("{" + prefix + ".title" + "}");
@@ -79,7 +79,7 @@ public class Handler {
 
         tasks.stream().filter(task -> !task.getRawTitle().isEmpty()).forEach(task -> {
             counter++;
-            String textKey = prefix + ".task." + counter + ".title";
+            String textKey = prefix + ".task.title" + counter;
             transKeys.put(textKey, task.getRawTitle());
             task.setRawTitle("{"+textKey+"}");
         });
@@ -90,7 +90,7 @@ public class Handler {
     private void handleRewards(List<Reward> rewards){
         rewards.stream().filter(reward -> !reward.getRawTitle().isEmpty()).forEach(reward -> {
             counter++;
-            String textKey = prefix + ".reward." + counter + ".title";
+            String textKey = prefix + ".reward.title" + counter;
             transKeys.put(textKey, reward.getRawTitle());
             descList.add("{"+textKey+"}");
         });
@@ -101,7 +101,7 @@ public class Handler {
     private void handleQuests(List<Quest> allQuests) {
         allQuests.forEach(quest ->{
             quests++;
-            prefix = "chapter." + chapters + ".quest." + quests;
+            prefix = "ftbquests.chapter." + quest.getChapter().getFilename() + ".quest" + quests;
             if(quest.getTitle() != null){
                 if (!quest.getRawTitle().isEmpty()){
                     transKeys.put(prefix + ".title", quest.getRawTitle());
@@ -145,7 +145,7 @@ public class Handler {
             }
             else {
                 description++;
-                String textKey = prefix + ".description." + description;
+                String textKey = prefix + ".description" + description;
                 transKeys.put(textKey, desc);
                 descList.add("{"+textKey+"}");
             }
@@ -187,7 +187,7 @@ public class Handler {
                     if (style.isObfuscated()){
                         jsonStringBuilder.append("\"obfuscated\":"+ 1).append(",");
                     }
-                    String textKey = prefix + ".rich_description." + counter + ".style." + styleInt;
+                    String textKey = prefix + ".rich_description" + counter + ".style" + styleInt;
                     transKeys.put(textKey, text);
                     jsonStringBuilder.append("\"translate\":\"").append(textKey).append("\",");
 
@@ -219,7 +219,7 @@ public class Handler {
                     styleInt++;
                 }
                 else{
-                    String textKey = prefix + ".rich_description." + counter;
+                    String textKey = prefix + ".rich_description" + counter;
                     transKeys.put(textKey, text);
                     jsonStringBuilder.append("{\"translate\":\"").append(textKey).append("\"},");
                 }

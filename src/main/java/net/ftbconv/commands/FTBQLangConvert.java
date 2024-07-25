@@ -83,7 +83,7 @@ public class FTBQLangConvert {
     {
         File fe = new File(parent, lang.toLowerCase(Locale.ROOT) + ".json");
         FileUtils.write(fe, FtbLangConvertMod.gson.toJson(transKeys), StandardCharsets.UTF_8);
-        PackUtils.createResourcePack(fe, FMLPaths.GAMEDIR.get().toFile()+"\\FTBLang\\FTB Quests Localization Keys.zip");
+        PackUtils.createResourcePack(fe, FMLPaths.GAMEDIR.get().toFile()+"\\FTBLang\\FTB-Quests-Localization-Resourcepack.zip");
     }
     static List<Locale> getAllLocales() {
         return PackUtils.map(Minecraft.getInstance().getLanguageManager().getLanguages().entrySet(), entry ->
