@@ -11,7 +11,7 @@ public class Constants {
         public static final int PACKFORMAT = 9;
         public static final String FILEPATH = "pack.mcmeta";// Output file path
         public static final String OUTPUTFOLDER = "FTBLang";
-        public static final String KUBEJSFOLDER = "kubejs/assets/kubejs/lang/";
+        public static final String KUBEJSFOLDER = "kubejs/assets/ftbquests/lang/";
         public static final String QUESTFOLDER = "config/ftbquests/quests/";
         public static final String BACKUPFOLDER = "backup/ftbquests";
         public static final String GAMEDIR = Platform.getGameFolder().toString();

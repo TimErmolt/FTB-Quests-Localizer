@@ -28,55 +28,53 @@ public class FTBQLangConvert {
     public FTBQLangConvert(CommandDispatcher<CommandSourceStack> dispatcher) {
 
         dispatcher.register(Commands.literal("ftblang")
-                                .then(Commands.argument("lang", StringArgumentType.word())
+                        .then(Commands.argument("lang", StringArgumentType.word())
 
 //                .requires(s->s.getServer() != null && s.getServer().isSingleplayer() || s.hasPermission(2))
-                        .executes(ctx ->{
-                            try{
-                                Handler handler = new Handler();
-                                // File Prep
-                                File parent = new File(GAMEDIR, OUTPUTFOLDER);
-                                File kubejsOutput = new File(parent, KUBEJSFOLDER);
-                                File questsFolder = new File(GAMEDIR, QUESTFOLDER);
-                                if(questsFolder.exists()){
-                                    File backup = new File(parent, BACKUPFOLDER);
-                                    FileUtils.copyDirectory(questsFolder, backup);
-                                }
+                                        .executes(ctx ->{
+                                            try{
+                                                Handler handler = new Handler();
+                                                // File Prep
+                                                File parent = new File(GAMEDIR, OUTPUTFOLDER);
+                                                File kubejsOutput = new File(parent, KUBEJSFOLDER);
+                                                File questsFolder = new File(GAMEDIR, QUESTFOLDER);
+                                                if(questsFolder.exists()){
+                                                    File backup = new File(parent, BACKUPFOLDER);
+                                                    FileUtils.copyDirectory(questsFolder, backup);
+                                                }
 
-                                BaseQuestFile questFile = FTBQuestsAPI.api().getQuestFile(false);
+                                                BaseQuestFile questFile = FTBQuestsAPI.api().getQuestFile(false);
 
-                                handler.handleRewardTables(questFile.getRewardTables());
-                                questFile.forAllChapterGroups(chapterGroup -> {
-                                    handler.setCounter(0);
-                                    handler.handleChapterGroup(chapterGroup);
-                                });
-                                questFile.forAllChapters(chapter ->{
-                                    handler.setCounter(0);
-                                    handler.handleChapter(chapter);
-                                });
+                                                handler.handleRewardTables(questFile.getRewardTables());
+                                                //handler.setCounter(0);
+                                                questFile.forAllChapterGroups(handler::handleChapterGroup);
+                                                handler.setCounter(0);
+                                                //handler.setCounter(0);
+                                                questFile.forAllChapters(chapter -> {
+                                                    handler.handleChapter(chapter);
+                                                    handler.addChapters();
+                                                });
 
+                                                File output = new File(parent, QUESTFOLDER);
+                                                questFile.writeDataFull(output.toPath());
 
+                                                String lang = ctx.getArgument("lang", String.class);
+                                                saveLang(handler.getTransKeys(), lang, kubejsOutput);
 
-                                File output = new File(parent, QUESTFOLDER);
-                                questFile.writeDataFull(output.toPath());
+                                                if(!lang.equalsIgnoreCase("en_us")){
+                                                    saveLang(handler.getTransKeys(), "en_us", kubejsOutput);
+                                                }
 
-                                String lang = ctx.getArgument("lang", String.class);
-                                saveLang(handler.getTransKeys(), lang, kubejsOutput);
+                                                ctx.getSource().getPlayerOrException().displayClientMessage(Component.literal("FTB quests files exported to: " + parent.getAbsolutePath()), true);
 
-                                if(!lang.equalsIgnoreCase("en_us")){
-                                    saveLang(handler.getTransKeys(), "en_us", kubejsOutput);
-                                }
+                                            }catch(Exception e){
+                                                e.printStackTrace();
+                                            }
 
-                                ctx.getSource().getPlayerOrException().displayClientMessage(Component.literal("FTB quests files exported to: " + parent.getAbsolutePath()), true);
+                                            return 1;
 
-                            }catch(Exception e){
-                                e.printStackTrace();
-                            }
-
-                            return 1;
-
-                        })
-                                )
+                                        })
+                        )
 
         );
 

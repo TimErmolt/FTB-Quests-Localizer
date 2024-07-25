@@ -39,24 +39,26 @@ public class Handler {
 
     public void handleRewardTables(List<RewardTable> rewardTables){
         rewardTables.forEach(rewardTable -> {
-           counter++;
-           transKeys.put("loot_table."+counter, rewardTable.getRawTitle());
-           rewardTable.setRawTitle("{" + "loot_table." + counter + "}");
+            counter++;
+            transKeys.put("loot_table."+counter, rewardTable.getRawTitle());
+            rewardTable.setRawTitle("{" + "loot_table." + counter + "}");
         });
         counter = 0;
     }
 
     public void handleChapterGroup(ChapterGroup chapterGroup){
-            counter++;
-            if(chapterGroup.getTitle() != null){
+        if(chapterGroup.getTitle() != null){
+            if (!chapterGroup.getRawTitle().isEmpty()){
                 transKeys.put("category." + counter, chapterGroup.getRawTitle());
                 chapterGroup.setRawTitle("{" + "category." + counter + "}");
+                counter++;
             }
-            counter = 0;
+        }
+        //counter = 0;
     }
 
     public void handleChapter(Chapter chapter){
-        prefix = "chapter." + chapter.getIndex();
+        prefix = "chapter." + chapters;
         if(chapter.getTitle() != null){
             transKeys.put(prefix + ".title", chapter.getRawTitle());
             chapter.setRawTitle("{" + prefix + ".title" + "}");
@@ -71,11 +73,11 @@ public class Handler {
 //        handleChapterImages(chapter.getImages());
         handleQuests(chapter.getQuests());
 
-}
+    }
 
     private void handleTasks(List<Task> tasks){
 
-        tasks.stream().filter(task -> !task.getRawTitle().isBlank()).forEach(task -> {
+        tasks.stream().filter(task -> !task.getRawTitle().isEmpty()).forEach(task -> {
             counter++;
             String textKey = prefix + ".task." + counter + ".title";
             transKeys.put(textKey, task.getRawTitle());
@@ -86,7 +88,7 @@ public class Handler {
     }
 
     private void handleRewards(List<Reward> rewards){
-        rewards.stream().filter(reward -> !reward.getRawTitle().isBlank()).forEach(reward -> {
+        rewards.stream().filter(reward -> !reward.getRawTitle().isEmpty()).forEach(reward -> {
             counter++;
             String textKey = prefix + ".reward." + counter + ".title";
             transKeys.put(textKey, reward.getRawTitle());
@@ -101,21 +103,24 @@ public class Handler {
             quests++;
             prefix = "chapter." + chapters + ".quest." + quests;
             if(quest.getTitle() != null){
-                transKeys.put(prefix + ".title", quest.getRawTitle());
-                quest.setRawTitle("{" + prefix + ".title" + "}");
+                if (!quest.getRawTitle().isEmpty()){
+                    transKeys.put(prefix + ".title", quest.getRawTitle());
+                    quest.setRawTitle("{" + prefix + ".title" + "}");
+                }
             }
-            if(!quest.getRawSubtitle().isBlank()){
+            if(!quest.getRawSubtitle().isEmpty()){
                 transKeys.put(prefix + ".subtitle", quest.getRawSubtitle());
                 quest.setRawSubtitle("{" + prefix + ".subtitle" + "}");
             }
-
+            //System.out.println("Task:" + quest.getTasksAsList());
+            //System.out.println("Des:" + quest.getRawDescription());
             handleTasks(quest.getTasksAsList());
-            handleRewards((List<Reward>) quest.getRewards());
+            handleRewards(quest.getRewards().stream().toList());
             handleQuestDescriptions(quest.getRawDescription());
 
             quest.getRawDescription().clear();
             quest.getRawDescription().addAll(descList);
-
+            descList.clear();
         });
         quests = 0;
     }
@@ -133,14 +138,14 @@ public class Handler {
             else if(desc.contains("{@pagebreak}")){
                 descList.add(desc);
             }
-            else if(desc.startsWith("[\"") && desc.endsWith("\"]")){
+            else if(desc.startsWith("[") && desc.endsWith("]")){
                 description++;
                 Component parsedText = TextUtils.parseRawText(desc);
                 handleJSON(parsedText); // This is gonna be messy
             }
             else {
                 description++;
-                String textKey = prefix + ".quest." + (quests) + ".description." + description;
+                String textKey = prefix + ".description." + description;
                 transKeys.put(textKey, desc);
                 descList.add("{"+textKey+"}");
             }
@@ -168,7 +173,7 @@ public class Handler {
                         jsonStringBuilder.append("\"color\":\"").append(color).append("\",");
                     }
 
-                    String textKey = prefix + ".quest." + (quests) + ".description." + counter + ".style." + styleInt;
+                    String textKey = prefix + ".description." + counter + ".style." + styleInt;
                     transKeys.put(textKey, text);
                     jsonStringBuilder.append("\"translate\":\"").append(textKey).append("\",");
 
@@ -187,7 +192,7 @@ public class Handler {
                         JsonObject hoverValue = hoverEventJSON.get("contents").getAsJsonObject();
 
                         String hoverText = hoverValue.get("text").getAsString();
-                        textKey = prefix + ".quest." + (quests) + ".description" + ".style." + styleInt + ".hover.text." + counter;
+                        textKey = prefix + ".description" + ".style." + styleInt + ".hover.text." + counter;
                         String hoverString = "\"hoverEvent\":{\"action\":\"" + hoverEventAction + "\",\"contents\":{\"translate\":\"" + textKey +"\"";
                         transKeys.put(textKey, hoverText);
 
@@ -200,7 +205,7 @@ public class Handler {
                     styleInt++;
                 }
                 else{
-                    String textKey = prefix + ".quest." + (quests) + ".description." + counter;
+                    String textKey = prefix + ".description." + counter;
                     transKeys.put(textKey, text);
                     jsonStringBuilder.append("{\"translate\":\"").append(textKey).append("\"},");
 
@@ -226,11 +231,11 @@ public class Handler {
 //    }
 
     private void handleDescriptionImage(String desc){
-            final String regex = "\\{image:.*?}";
-            transKeys.put(prefix + ".quest." + (quests) + ".image." + image, "\n");
-            descList.add("{" + prefix + ".quest." + (quests) + ".image." + image + "}");
-            image++;
-
+        //final String regex = "\\{image:.*?}";
+        transKeys.put(prefix + ".image." + image, desc);
+        descList.add("{" + prefix + ".image." + image + "}");
+        image++;
+            /*
             final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
             final Matcher matcher = pattern.matcher(desc);
 
@@ -238,8 +243,7 @@ public class Handler {
                 desc = desc.replace(matcher.group(0), "");
                 descList.add(matcher.group(0));
             }
-
-
+             */
     }
 
     public TreeMap<String, String> getTransKeys() {
@@ -248,6 +252,12 @@ public class Handler {
 
     public void setCounter(int counter) {
         this.counter = counter;
+    }
+    public void addChapters() {
+        this.chapters++;
+    }
+    public int getChapters(){
+        return this.chapters;
     }
 }
 
