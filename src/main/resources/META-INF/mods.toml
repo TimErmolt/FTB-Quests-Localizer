@@ -9,14 +9,14 @@ credits="Bello" #optional
 authors="${mod_authors}" #optional
 description='''${mod_description}'''
 
-[[dependencies.ftbquestlocalization]]
+[[dependencies.ftbquestlocalizer]]
 modId="neoforge"
 type="required"
 versionRange="${neo_version_range}"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.ftbquestlocalization]]
+[[dependencies.ftbquestlocalizer]]
 modId="minecraft"
 type="required"
 versionRange="${minecraft_version_range}"

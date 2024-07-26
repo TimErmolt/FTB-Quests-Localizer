@@ -1,7 +1,7 @@
-package net.ftbconv.events;
+package me.litchi.ftbqlocal.events;
 
 
-import net.ftbconv.commands.FTBQLangConvert;
+import me.litchi.ftbqlocal.commands.FTBQLangConvert;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.server.command.ConfigCommand;

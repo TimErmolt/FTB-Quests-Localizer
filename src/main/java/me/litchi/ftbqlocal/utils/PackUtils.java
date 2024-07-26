@@ -1,4 +1,4 @@
-package net.ftbconv.utils;
+package me.litchi.ftbqlocal.utils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

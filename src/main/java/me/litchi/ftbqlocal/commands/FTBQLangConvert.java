@@ -1,12 +1,13 @@
-package net.ftbconv.commands;
+package me.litchi.ftbqlocal.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import dev.ftb.mods.ftbquests.api.FTBQuestsAPI;
 import dev.ftb.mods.ftbquests.quest.BaseQuestFile;
-import net.ftbconv.FtbLangConvertMod;
-import net.ftbconv.utils.Handler;
-import net.ftbconv.utils.PackUtils;
+import me.litchi.ftbqlocal.FtbQuestLocalizerMod;
+import me.litchi.ftbqlocal.utils.Constants;
+import me.litchi.ftbqlocal.utils.Handler;
+import me.litchi.ftbqlocal.utils.PackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -21,8 +22,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TreeMap;
 
-import static net.ftbconv.utils.Constants.PackMCMeta.*;
-
 public class FTBQLangConvert {
 
     public FTBQLangConvert(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -35,11 +34,11 @@ public class FTBQLangConvert {
                                             try{
                                                 Handler handler = new Handler();
                                                 // File Prep
-                                                File parent = new File(GAMEDIR, OUTPUTFOLDER);
-                                                File kubejsOutput = new File(parent, KUBEJSFOLDER);
-                                                File questsFolder = new File(GAMEDIR, QUESTFOLDER);
+                                                File parent = new File(Constants.PackMCMeta.GAMEDIR, Constants.PackMCMeta.OUTPUTFOLDER);
+                                                File kubejsOutput = new File(parent, Constants.PackMCMeta.KUBEJSFOLDER);
+                                                File questsFolder = new File(Constants.PackMCMeta.GAMEDIR, Constants.PackMCMeta.QUESTFOLDER);
                                                 if(questsFolder.exists()){
-                                                    File backup = new File(parent, BACKUPFOLDER);
+                                                    File backup = new File(parent, Constants.PackMCMeta.BACKUPFOLDER);
                                                     FileUtils.copyDirectory(questsFolder, backup);
                                                 }
 
@@ -55,7 +54,7 @@ public class FTBQLangConvert {
                                                     handler.addChapters();
                                                 });
 
-                                                File output = new File(parent, QUESTFOLDER);
+                                                File output = new File(parent, Constants.PackMCMeta.QUESTFOLDER);
                                                 questFile.writeDataFull(output.toPath());
 
                                                 String lang = ctx.getArgument("lang", String.class);
@@ -82,7 +81,7 @@ public class FTBQLangConvert {
     private void saveLang(TreeMap<String, String> transKeys, String lang, File parent) throws IOException
     {
         File fe = new File(parent, lang.toLowerCase(Locale.ROOT) + ".json");
-        FileUtils.write(fe, FtbLangConvertMod.gson.toJson(transKeys), StandardCharsets.UTF_8);
+        FileUtils.write(fe, FtbQuestLocalizerMod.gson.toJson(transKeys), StandardCharsets.UTF_8);
         PackUtils.createResourcePack(fe, FMLPaths.GAMEDIR.get().toFile()+"\\FTBLang\\FTB-Quests-Localization-Resourcepack.zip");
     }
     static List<Locale> getAllLocales() {

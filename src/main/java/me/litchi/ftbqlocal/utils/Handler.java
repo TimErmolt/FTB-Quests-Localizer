@@ -1,4 +1,4 @@
-package net.ftbconv.utils;
+package me.litchi.ftbqlocal.utils;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
@@ -7,7 +7,7 @@ import dev.ftb.mods.ftbquests.quest.loot.RewardTable;
 import dev.ftb.mods.ftbquests.quest.reward.Reward;
 import dev.ftb.mods.ftbquests.quest.task.Task;
 import dev.ftb.mods.ftbquests.util.TextUtils;
-import net.ftbconv.FtbLangConvertMod;
+import me.litchi.ftbqlocal.FtbQuestLocalizerMod;
 import net.minecraft.Util;
 import net.minecraft.network.chat.*;
 import org.slf4j.Logger;
@@ -16,8 +16,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Handler {
     private final TreeMap<String, String> transKeys;
@@ -28,7 +26,7 @@ public class Handler {
     private int description = 0;
     private int image = 0;
     private final List<String> descList = new ArrayList<>();
-    private static final Logger log = LoggerFactory.getLogger(FtbLangConvertMod.class);
+    private static final Logger log = FtbQuestLocalizerMod.log;
 
 
 
@@ -138,7 +136,7 @@ public class Handler {
             else if(desc.contains("{@pagebreak}")){
                 descList.add(desc);
             }
-            else if(desc.startsWith("[") && desc.endsWith("]")){
+            else if((desc.startsWith("[") && desc.endsWith("]")) || (desc.startsWith("{") && desc.endsWith("}"))){
                 description++;
                 Component parsedText = TextUtils.parseRawText(desc);
                 handleJSON(parsedText); // This is gonna be messy
@@ -159,7 +157,7 @@ public class Handler {
             String jsonString;
             List<Component> flatList = parsedText.toFlatList();
             int styleInt = 1;
-            counter = 0;
+            //counter = 0;
             StringBuilder jsonStringBuilder = new StringBuilder("[\"\",");
             for(Component c : flatList){
                 counter++;
@@ -191,7 +189,6 @@ public class Handler {
                     transKeys.put(textKey, text);
                     jsonStringBuilder.append("\"translate\":\"").append(textKey).append("\",");
 
-
                     ClickEvent clickEvent = style.getClickEvent();
                     if(clickEvent != null){
                         String clickEventValue = clickEvent.getValue();
@@ -203,18 +200,16 @@ public class Handler {
                         String hoverEventAction = hoverEvent.getAction().getSerializedName();
                         //TODO: Check if this is the correct way to get the JsonObject from the CODEC
                         JsonObject hoverEventJSON = Util.getOrThrow(HoverEvent.CODEC.encodeStart(JsonOps.INSTANCE, hoverEvent), IllegalStateException::new).getAsJsonObject();
+                        System.out.println(hoverEventJSON);
                         JsonObject hoverValue = hoverEventJSON.get("contents").getAsJsonObject();
-
                         String hoverText = hoverValue.get("text").getAsString();
+
                         textKey = prefix + ".rich_description" + ".style." + styleInt + ".hover.text." + counter;
                         String hoverString = "\"hoverEvent\":{\"action\":\"" + hoverEventAction + "\",\"contents\":{\"translate\":\"" + textKey +"\"";
                         transKeys.put(textKey, hoverText);
 
-
-
-                        hoverString += "}}},";
+                        hoverString += "}},";
                         jsonStringBuilder.append(hoverString);
-
                     }
                     styleInt++;
                 }
