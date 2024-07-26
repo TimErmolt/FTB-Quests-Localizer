@@ -5,8 +5,9 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import dev.ftb.mods.ftbquests.api.FTBQuestsAPI;
 import dev.ftb.mods.ftbquests.quest.BaseQuestFile;
 import me.litchi.ftbqlocal.FtbQuestLocalizerMod;
+import me.litchi.ftbqlocal.handler.impl.Handler;
 import me.litchi.ftbqlocal.utils.Constants;
-import me.litchi.ftbqlocal.utils.Handler;
+import me.litchi.ftbqlocal.utils.HandlerCounter;
 import me.litchi.ftbqlocal.utils.PackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
@@ -47,21 +48,22 @@ public class FTBQLangConvert {
                                                 handler.handleRewardTables(questFile.getRewardTables());
                                                 //handler.setCounter(0);
                                                 questFile.forAllChapterGroups(handler::handleChapterGroup);
-                                                handler.setCounter(0);
+                                                HandlerCounter.setCounter(0);
                                                 //handler.setCounter(0);
                                                 questFile.forAllChapters(chapter -> {
                                                     handler.handleChapter(chapter);
-                                                    handler.addChapters();
+                                                    handler.handleQuests(chapter.getQuests());
+                                                    HandlerCounter.addChapters();
                                                 });
 
                                                 File output = new File(parent, Constants.PackMCMeta.QUESTFOLDER);
                                                 questFile.writeDataFull(output.toPath());
 
                                                 String lang = ctx.getArgument("lang", String.class);
-                                                saveLang(handler.getTransKeys(), lang, kubejsOutput);
+                                                saveLang(HandlerCounter.transKeys, lang, kubejsOutput);
 
                                                 if(!lang.equalsIgnoreCase("en_us")){
-                                                    saveLang(handler.getTransKeys(), "en_us", kubejsOutput);
+                                                    saveLang(HandlerCounter.transKeys, "en_us", kubejsOutput);
                                                 }
 
                                                 ctx.getSource().getPlayerOrException().displayClientMessage(Component.literal("FTB quests files exported to: " + parent.getAbsolutePath()), true);
