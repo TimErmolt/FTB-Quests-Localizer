@@ -1,13 +1,11 @@
-package net.ftbconv.events;
+package me.litchi.ftbqlocal.events;
 
 
-import net.ftbconv.commands.FTBQLangConvert;
+import me.litchi.ftbqlocal.commands.FTBQLangConvert;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.command.ConfigCommand;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-
-import static net.ftbconv.utils.Constants.PackMCMeta.MOD_NAME;
 
 
 @EventBusSubscriber
