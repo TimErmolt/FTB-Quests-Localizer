@@ -1,11 +1,11 @@
 modLoader="javafml"
 loaderVersion="[40,)"
-license="All rights reserved"
+license="MIT"
 [[mods]]
-modId="ftbconv"
-version="${file.jarVersion}"
-displayName="FTB quest lang converter"
-description=''' Stuff '''
+modId="ftbquestlocalizer"
+version="0.1.0"
+displayName="FTB Quests Localizer"
+description=''' FTB Quests Localization Keys Converter.\nA Mod to export FTB Quest Files into Localization Files. '''
 
 [[dependencies.ftbconv]]
     modId="forge"
