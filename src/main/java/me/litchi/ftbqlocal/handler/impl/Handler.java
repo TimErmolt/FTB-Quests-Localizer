@@ -11,9 +11,11 @@ import me.litchi.ftbqlocal.handler.FtbQHandler;
 import me.litchi.ftbqlocal.service.impl.JSONService;
 import me.litchi.ftbqlocal.utils.HandlerCounter;
 import net.minecraft.network.chat.Component;
+import org.openjdk.nashorn.internal.runtime.regexp.joni.Regex;
 
 import java.util.List;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 public class Handler implements FtbQHandler {
     private final TreeMap<String, String> transKeys = HandlerCounter.transKeys;
@@ -101,9 +103,10 @@ public class Handler implements FtbQHandler {
     }
 
     private void handleQuestDescriptions(List<String> descriptions) {
+        String rich_desc_regex = "\\s*[\\[\\{].*\"+.*[\\]\\}]\\s*";
+        Pattern rich_desc_pattern = Pattern.compile(rich_desc_regex);
         descriptions.forEach(desc -> {
             HandlerCounter.addImage();
-
             if (desc.isBlank()) {
                 HandlerCounter.descList.add("");
             }
@@ -113,7 +116,7 @@ public class Handler implements FtbQHandler {
             else if(desc.contains("{@pagebreak}")){
                 HandlerCounter.descList.add(desc);
             }
-            else if((desc.startsWith("[") && desc.endsWith("]")) || (desc.startsWith("{") && desc.endsWith("}"))){
+            else if(rich_desc_pattern.matcher(desc).find()){
                 HandlerCounter.addDescription();
                 Component parsedText = TextUtils.parseRawText(desc);
                 handleJSON.handleJSON(parsedText);
