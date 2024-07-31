@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 
 import java.util.List;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 public class Handler implements FtbQHandler {
     private final TreeMap<String, String> transKeys = HandlerCounter.transKeys;
@@ -101,6 +102,8 @@ public class Handler implements FtbQHandler {
     }
 
     private void handleQuestDescriptions(List<String> descriptions) {
+        String rich_desc_regex = "\\s*[\\[\\{].*\"+.*[\\]\\}]\\s*";
+        Pattern rich_desc_pattern = Pattern.compile(rich_desc_regex);
         descriptions.forEach(desc -> {
             HandlerCounter.addImage();
 
@@ -113,7 +116,7 @@ public class Handler implements FtbQHandler {
             else if(desc.contains("{@pagebreak}")){
                 HandlerCounter.descList.add(desc);
             }
-            else if((desc.startsWith("[") && desc.endsWith("]")) || (desc.startsWith("{") && desc.endsWith("}"))){
+            else if(rich_desc_pattern.matcher(desc).find()){
                 HandlerCounter.addDescription();
                 Component parsedText = TextUtils.parseRawText(desc);
                 handleJSON.handleJSON(parsedText);
