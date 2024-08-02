@@ -2,10 +2,10 @@ package me.litchi.ftbqlocal.events;
 
 
 import me.litchi.ftbqlocal.commands.FTBQLangConvert;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.server.command.ConfigCommand;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.server.command.ConfigCommand;
 
 
 @EventBusSubscriber
