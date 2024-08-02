@@ -10,14 +10,14 @@ authors="${mod_authors}" #optional
 # displayTest="IGNORE_ALL_VERSION" # MATCH_VERSION is the default if nothing is specified (#optional)
 description='''${mod_description}'''
 
-[[dependencies.ftbquestlocalization]]
+[[dependencies.ftbquestlocalizer]]
 modId="forge"
 mandatory=true
 versionRange="${loader_version_range}"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.ftbquestlocalization]]
+[[dependencies.ftbquestlocalizer]]
 modId="minecraft"
 mandatory=true
 versionRange="${minecraft_version_range}"

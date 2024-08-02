@@ -12,6 +12,8 @@ import me.litchi.ftbqlocal.service.impl.JSONService;
 import me.litchi.ftbqlocal.utils.HandlerCounter;
 import net.minecraft.network.chat.Component;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
@@ -50,8 +52,15 @@ public class Handler implements FtbQHandler {
         }
         if(!chapter.getRawSubtitle().isEmpty()){
             transKeys.put(prefix + ".subtitle", String.join("\n", chapter.getRawSubtitle()));
-            chapter.getRawSubtitle().clear();
-            chapter.getRawSubtitle().add("{" + prefix + ".subtitle" + "}");
+            try {
+                Field rawSubtitle = chapter.getClass().getDeclaredField("rawSubtitle");
+                rawSubtitle.setAccessible(true);
+                List<String> subTitleList = new ArrayList<>();
+                subTitleList.add("{" + prefix + ".subtitle" + "}");
+                rawSubtitle.set(chapter,subTitleList);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
