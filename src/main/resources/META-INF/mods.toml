@@ -3,18 +3,18 @@ loaderVersion="[40,)"
 license="MIT"
 [[mods]]
 modId="ftbquestlocalizer"
-version="0.1.0"
+version="1.0.3"
 displayName="FTB Quests Localizer"
 description=''' FTB Quests Localization Keys Converter.\nA Mod to export FTB Quest Files into Localization Files. '''
 
-[[dependencies.ftbconv]]
+[[dependencies.ftbquestlocalizer]]
     modId="forge"
     mandatory=true
     versionRange="[40,)"
     ordering="NONE"
     side="BOTH"
 
-[[dependencies.ftbconv]]
+[[dependencies.ftbquestlocalizer]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.18.2,1.19)"
