@@ -78,7 +78,7 @@ public class Handler implements FtbQHandler {
             HandlerCounter.addCounter();
             String textKey = HandlerCounter.getPrefix() + ".reward.title" + HandlerCounter.getCounter();
             transKeys.put(textKey, reward.getRawTitle());
-            reward.setRawTitle("{"+textKey+"}");
+            HandlerCounter.descList.add("{"+textKey+"}");
         });
         HandlerCounter.setCounter(0);
     }
