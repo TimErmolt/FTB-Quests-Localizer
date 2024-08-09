@@ -2,10 +2,6 @@ package me.litchi.ftbqlocal.utils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Function;
 import java.util.zip.*;
 import com.google.gson.*;
 import org.apache.commons.io.FileUtils;
@@ -13,14 +9,13 @@ import org.apache.commons.io.FileUtils;
 public class PackUtils {
     public static void createResourcePack(File file, String outputName) throws IOException {
 
-        String zipFileName = outputName;
         JsonObject packObject = generatePackMcmeta(Constants.PackMCMeta.DESCRIPTION, Constants.PackMCMeta.PACKFORMAT);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonOutput = gson.toJson(packObject);
         File packMcMeta = new File(Constants.PackMCMeta.FILEPATH);
-        FileUtils.write(packMcMeta, jsonOutput.toString(), StandardCharsets.UTF_8);
+        FileUtils.write(packMcMeta, jsonOutput, StandardCharsets.UTF_8);
 
-        try (ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(zipFileName))) {
+        try (ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(outputName))) {
             addToZip("assets\\minecraft\\lang\\", file, zipOut);
             addToZip("", packMcMeta, zipOut);
 
@@ -60,14 +55,6 @@ public class PackUtils {
         return packObject;
 
     }
-    public static <T, R> List<R> map(Collection<T> list, Function<T, R> function) {
-        List<R> l = new ArrayList<>(list.size() + 1);
-        for (T t : list) {
-            l.add(function.apply(t));
-        }
-        return l;
-    }
-
 }
 
 

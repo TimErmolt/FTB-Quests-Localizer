@@ -15,8 +15,6 @@ public class JSONService implements FtbQService {
         try{
             String jsonString;
             List<Component> flatList = parsedText.toFlatList();
-            int styleInt = 1;
-            //counter = 0;
             StringBuilder jsonStringBuilder = new StringBuilder("[\"\",");
             for(Component c : flatList){
                 HandlerCounter.addCounter();
@@ -46,13 +44,16 @@ public class JSONService implements FtbQService {
                     }
                     String textKey = HandlerCounter.getPrefix() + ".rich_description" + HandlerCounter.getCounter();
                     HandlerCounter.transKeys.put(textKey, text);
-                    jsonStringBuilder.append("\"translate\":\"").append(textKey).append("\",");
+
 
                     ClickEvent clickEvent = style.getClickEvent();
                     if(clickEvent != null){
+                        jsonStringBuilder.append("\"translate\":\"").append(textKey).append("\",");
                         String clickEventValue = clickEvent.getValue();
                         String clickEventAction = clickEvent.getAction().getName();
                         jsonStringBuilder.append("\"clickEvent\":{\"action\":\"").append(clickEventAction).append("\",\"value\":\"").append(clickEventValue).append("\"}},");
+                    }else {
+                        jsonStringBuilder.append("\"translate\":\"").append(textKey).append("\"},");
                     }
                     HoverEvent hoverEvent = style.getHoverEvent();
                     if(hoverEvent != null){
@@ -71,7 +72,6 @@ public class JSONService implements FtbQService {
                         hoverString += "}},";
                         jsonStringBuilder.append(hoverString);
                     }
-                    styleInt++;
                 }
                 else{
                     String textKey = HandlerCounter.getPrefix() + ".rich_description" + HandlerCounter.getCounter();
