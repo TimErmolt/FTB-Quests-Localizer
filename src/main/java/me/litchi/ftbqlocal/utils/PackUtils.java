@@ -25,7 +25,7 @@ public class PackUtils {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String jsonOutput = gson.toJson(packObject);
             File packMcMeta = new File(Constants.PackMCMeta.FILEPATH);
-            FileUtils.write(packMcMeta, jsonOutput.toString(), StandardCharsets.UTF_8);
+            FileUtils.write(packMcMeta, jsonOutput, StandardCharsets.UTF_8);
 
             try (ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(zipFileName))) {
                 addToZip("assets\\minecraft\\lang\\", file, zipOut);

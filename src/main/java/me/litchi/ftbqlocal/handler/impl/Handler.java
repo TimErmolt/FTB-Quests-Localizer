@@ -114,7 +114,6 @@ public class Handler implements FtbQHandler {
         String rich_desc_regex = "\\s*[\\[\\{].*\"+.*[\\]\\}]\\s*";
         Pattern rich_desc_pattern = Pattern.compile(rich_desc_regex);
         descriptions.forEach(desc -> {
-            HandlerCounter.addImage();
             if (desc.isBlank()) {
                 HandlerCounter.descList.add("");
             }
@@ -127,7 +126,7 @@ public class Handler implements FtbQHandler {
             else if(rich_desc_pattern.matcher(desc).find()){
                 HandlerCounter.addDescription();
                 Component parsedText = TextUtils.parseRawText(desc);
-                handleJSON.handleJSON(parsedText);
+                HandlerCounter.descList.add(handleJSON.handleJSON(parsedText));
             }
             else {
                 HandlerCounter.addDescription();

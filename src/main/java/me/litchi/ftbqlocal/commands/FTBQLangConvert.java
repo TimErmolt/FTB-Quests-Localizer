@@ -4,8 +4,10 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import dev.ftb.mods.ftbquests.api.FTBQuestsAPI;
 import dev.ftb.mods.ftbquests.quest.BaseQuestFile;
+import dev.ftb.mods.ftbquests.quest.ServerQuestFile;
 import me.litchi.ftbqlocal.FtbQuestLocalizerMod;
 import me.litchi.ftbqlocal.handler.impl.Handler;
+import me.litchi.ftbqlocal.utils.BackPortUtils;
 import me.litchi.ftbqlocal.utils.Constants;
 import me.litchi.ftbqlocal.utils.HandlerCounter;
 import me.litchi.ftbqlocal.utils.PackUtils;
@@ -33,6 +35,10 @@ public class FTBQLangConvert {
 //                .requires(s->s.getServer() != null && s.getServer().isSingleplayer() || s.hasPermission(2))
                                         .executes(ctx ->{
                                             try{
+                                                File output2 = new File(Constants.PackMCMeta.GAMEDIR, Constants.PackMCMeta.QUESTFOLDER);
+                                                ServerQuestFile serverQuestFile = ServerQuestFile.INSTANCE;
+                                                serverQuestFile.markDirty();
+                                                serverQuestFile.saveNow();
                                                 Handler handler = new Handler();
                                                 // File Prep
                                                 File parent = new File(Constants.PackMCMeta.GAMEDIR, Constants.PackMCMeta.OUTPUTFOLDER);
@@ -42,14 +48,11 @@ public class FTBQLangConvert {
                                                     File backup = new File(parent, Constants.PackMCMeta.BACKUPFOLDER);
                                                     FileUtils.copyDirectory(questsFolder, backup);
                                                 }
-
+                                                BackPortUtils.backport();
                                                 BaseQuestFile questFile = FTBQuestsAPI.api().getQuestFile(false);
-
                                                 handler.handleRewardTables(questFile.getRewardTables());
-                                                //handler.setCounter(0);
                                                 questFile.forAllChapterGroups(handler::handleChapterGroup);
                                                 HandlerCounter.setCounter(0);
-                                                //handler.setCounter(0);
                                                 questFile.forAllChapters(chapter -> {
                                                     handler.handleChapter(chapter);
                                                     handler.handleQuests(chapter.getQuests());
@@ -58,10 +61,10 @@ public class FTBQLangConvert {
 
                                                 File output = new File(parent, Constants.PackMCMeta.QUESTFOLDER);
                                                 questFile.writeDataFull(output.toPath());
-
+                                                questFile.writeDataFull(output2.toPath());
+                                                ServerQuestFile.INSTANCE.load();
                                                 String lang = ctx.getArgument("lang", String.class);
                                                 saveLang(HandlerCounter.transKeys, lang, kubejsOutput);
-
                                                 if(!lang.equalsIgnoreCase("en_us")){
                                                     saveLang(HandlerCounter.transKeys, "en_us", kubejsOutput);
                                                 }
