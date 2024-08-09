@@ -8,7 +8,7 @@ public class Constants {
         public static final String PACKNAME = "FTB-Quest-Localization-Resourcepack.zip";
         public static final String DESCRIPTION = "Localization Resourcepack";
         // https://minecraft.wiki/w/Pack_format
-        public static final int PACKFORMAT = 9;
+        public static final int PACKFORMAT = 22;
         public static final String FILEPATH = "pack.mcmeta";// Output file path
         public static final String OUTPUTFOLDER = "FTBLang";
         public static final String KUBEJSFOLDER = "kubejs\\assets\\ftbquests\\lang\\";
