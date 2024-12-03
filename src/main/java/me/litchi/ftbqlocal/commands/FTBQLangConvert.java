@@ -23,9 +23,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
-import java.util.TreeMap;
 
 public class FTBQLangConvert {
+    public static String langStr = "en_us";
 
     public FTBQLangConvert(CommandDispatcher<CommandSourceStack> dispatcher) {
 
@@ -44,11 +44,17 @@ public class FTBQLangConvert {
                                                 File parent = new File(Constants.PackMCMeta.GAMEDIR, Constants.PackMCMeta.OUTPUTFOLDER);
                                                 File kubejsOutput = new File(parent, Constants.PackMCMeta.KUBEJSFOLDER);
                                                 File questsFolder = new File(Constants.PackMCMeta.GAMEDIR, Constants.PackMCMeta.QUESTFOLDER);
+                                                File kubejsBackupFile = new File(parent,Constants.PackMCMeta.KUBEJSBACKUPFOLDER);
+                                                File mcKubeJsOut = new File(Constants.PackMCMeta.KUBEJSFOLDER);
+                                                if (kubejsOutput.exists()){
+                                                    FileUtils.copyDirectory(kubejsOutput,kubejsBackupFile);
+                                                }
+                                                langStr = ctx.getArgument("lang", String.class);
+                                                BackPortUtils.backport();
                                                 if(questsFolder.exists()){
                                                     File backup = new File(parent, Constants.PackMCMeta.BACKUPFOLDER);
                                                     FileUtils.copyDirectory(questsFolder, backup);
                                                 }
-                                                BackPortUtils.backport();
                                                 BaseQuestFile questFile = FTBQuestsAPI.api().getQuestFile(false);
                                                 handler.handleRewardTables(questFile.getRewardTables());
                                                 questFile.forAllChapterGroups(handler::handleChapterGroup);
@@ -63,12 +69,11 @@ public class FTBQLangConvert {
                                                 questFile.writeDataFull(output.toPath());
                                                 questFile.writeDataFull(output2.toPath());
                                                 ServerQuestFile.INSTANCE.load();
-                                                String lang = ctx.getArgument("lang", String.class);
-                                                saveLang(HandlerCounter.transKeys, lang, kubejsOutput);
-                                                if(!lang.equalsIgnoreCase("en_us")){
-                                                    saveLang(HandlerCounter.transKeys, "en_us", kubejsOutput);
+                                                saveLang(langStr, kubejsOutput);
+                                                saveLang(langStr, mcKubeJsOut);
+                                                if(!langStr.equalsIgnoreCase("en_us")){
+                                                    saveLang("en_us", kubejsOutput);
                                                 }
-
                                                 ctx.getSource().getPlayerOrException().displayClientMessage(Component.literal("FTB quests files exported to: " + parent.getAbsolutePath()), true);
 
                                             }catch(Exception e){
@@ -83,10 +88,10 @@ public class FTBQLangConvert {
         );
 
     }
-    private void saveLang(TreeMap<String, String> transKeys, String lang, File parent) throws IOException
+    private void saveLang(String lang, File parent) throws IOException
     {
         File fe = new File(parent, lang.toLowerCase(Locale.ROOT) + ".json");
-        FileUtils.write(fe, FtbQuestLocalizerMod.gson.toJson(transKeys), StandardCharsets.UTF_8);
+        FileUtils.write(fe, FtbQuestLocalizerMod.gson.toJson(HandlerCounter.transKeys), StandardCharsets.UTF_8);
         PackUtils.createResourcePack(fe, FMLPaths.GAMEDIR.get().toFile()+"\\FTBLang\\FTB-Quests-Localization-Resourcepack.zip");
     }
     static List<Locale> getAllLocales() {
