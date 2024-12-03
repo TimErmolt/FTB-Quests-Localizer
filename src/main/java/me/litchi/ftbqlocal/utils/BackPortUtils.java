@@ -19,8 +19,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipFile;
 
+import static me.litchi.ftbqlocal.commands.FTBQLangConvert.langStr;
+
 public class BackPortUtils implements FtbQHandler {
-    private static final String KUBEJS_LANG_DIR = Constants.PackMCMeta.GAMEDIR+"\\"+Constants.PackMCMeta.KUBEJSFOLDER+"\\en_us.json";
+    private static final String KUBEJS_LANG_DIR = Constants.PackMCMeta.GAMEDIR+"\\FTBLang\\backup\\"+Constants.PackMCMeta.KUBEJSFOLDER+"\\"+langStr+".json";
     private static final String RESOURCE_LANG_DIR = Constants.PackMCMeta.GAMEDIR+"\\resourcepacks\\"+Constants.PackMCMeta.PACKNAME;
     private static final Logger log = LoggerFactory.getLogger(BackPortUtils.class);
     private static JsonObject enJSON = null;
@@ -30,6 +32,7 @@ public class BackPortUtils implements FtbQHandler {
         try {
             BaseQuestFile questFile = FTBQuestsAPI.api().getQuestFile(false);
             File kubefile = new File(KUBEJS_LANG_DIR);
+            log.info(kubefile.getAbsolutePath());
             String en_us;
             if (!kubefile.exists()){
                 try (ZipFile zipFile = new ZipFile(RESOURCE_LANG_DIR)){
