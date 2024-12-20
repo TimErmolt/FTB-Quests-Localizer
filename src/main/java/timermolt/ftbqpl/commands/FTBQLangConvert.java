@@ -1,15 +1,15 @@
-package ftbqpl.commands;
+package timermolt.ftbqpl.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import dev.ftb.mods.ftbquests.api.FTBQuestsAPI;
 import dev.ftb.mods.ftbquests.quest.*;
-import ftbqpl.FTBQuestPrecisionLocalizerMod;
-import ftbqpl.handler.impl.Handler;
-import ftbqpl.utils.BackPortUtils;
-import ftbqpl.utils.Constants;
-import ftbqpl.utils.HandlerCounter;
-import ftbqpl.utils.PackUtils;
+import timermolt.ftbqpl.FTBQuestPrecisionLocalizerMod;
+import timermolt.ftbqpl.handler.impl.Handler;
+import timermolt.ftbqpl.utils.BackPortUtils;
+import timermolt.ftbqpl.utils.Constants;
+import timermolt.ftbqpl.utils.HandlerCounter;
+import timermolt.ftbqpl.utils.PackUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;

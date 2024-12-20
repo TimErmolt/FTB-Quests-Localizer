@@ -1,7 +1,7 @@
-package ftbqpl.events;
+package timermolt.ftbqpl.events;
 
 
-import ftbqpl.commands.FTBQLangConvert;
+import timermolt.ftbqpl.commands.FTBQLangConvert;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.command.ConfigCommand;

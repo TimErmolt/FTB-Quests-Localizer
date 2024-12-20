@@ -1,4 +1,4 @@
-package ftbqpl.utils;
+package timermolt.ftbqpl.utils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

@@ -1,4 +1,4 @@
-package ftbqpl.utils;
+package timermolt.ftbqpl.utils;
 
 import dev.architectury.platform.Platform;
 

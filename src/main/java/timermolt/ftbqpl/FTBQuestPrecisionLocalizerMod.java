@@ -1,7 +1,7 @@
-package ftbqpl;
+package timermolt.ftbqpl;
 
 import com.google.gson.*;
-import ftbqpl.events.ModEvents;
+import timermolt.ftbqpl.events.ModEvents;
 import net.minecraftforge.common.MinecraftForge;
 
 import net.minecraftforge.fml.common.Mod;

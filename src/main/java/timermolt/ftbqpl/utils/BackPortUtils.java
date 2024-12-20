@@ -1,11 +1,11 @@
-package ftbqpl.utils;
+package timermolt.ftbqpl.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dev.ftb.mods.ftbquests.api.FTBQuestsAPI;
 import dev.ftb.mods.ftbquests.quest.*;
 import dev.ftb.mods.ftbquests.quest.loot.RewardTable;
-import ftbqpl.handler.FtbQHandler;
+import timermolt.ftbqpl.handler.FtbQHandler;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipFile;
 
-import static ftbqpl.commands.FTBQLangConvert.langStr;
+import static timermolt.ftbqpl.commands.FTBQLangConvert.langStr;
 
 public class BackPortUtils implements FtbQHandler {
     private static final String KUBEJS_LANG_DIR = Constants.PackMCMeta.GAMEDIR+"\\FTBLang\\backup\\"+Constants.PackMCMeta.KUBEJSFOLDER+"\\"+langStr+".json";

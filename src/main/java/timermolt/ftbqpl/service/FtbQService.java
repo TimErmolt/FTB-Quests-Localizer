@@ -1,4 +1,4 @@
-package ftbqpl.service;
+package timermolt.ftbqpl.service;
 
 import net.minecraft.network.chat.Component;
 

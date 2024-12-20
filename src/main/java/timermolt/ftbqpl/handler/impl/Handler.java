@@ -1,4 +1,4 @@
-package ftbqpl.handler.impl;
+package timermolt.ftbqpl.handler.impl;
 
 import dev.ftb.mods.ftbquests.quest.Chapter;
 import dev.ftb.mods.ftbquests.quest.ChapterGroup;
@@ -7,9 +7,9 @@ import dev.ftb.mods.ftbquests.quest.loot.RewardTable;
 import dev.ftb.mods.ftbquests.quest.reward.Reward;
 import dev.ftb.mods.ftbquests.quest.task.Task;
 import dev.ftb.mods.ftbquests.util.TextUtils;
-import ftbqpl.handler.FtbQHandler;
-import ftbqpl.service.impl.JSONService;
-import ftbqpl.utils.HandlerCounter;
+import timermolt.ftbqpl.handler.FtbQHandler;
+import timermolt.ftbqpl.service.impl.JSONService;
+import timermolt.ftbqpl.utils.HandlerCounter;
 import net.minecraft.network.chat.Component;
 
 import java.lang.reflect.Field;
@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 public class Handler implements FtbQHandler {
     private final TreeMap<String, String> transKeys = HandlerCounter.transKeys;
     private final JSONService handleJSON = new JSONService();
+
     @Override
     public void handleRewardTables(List<RewardTable> rewardTables) {
         rewardTables.forEach(rewardTable -> {

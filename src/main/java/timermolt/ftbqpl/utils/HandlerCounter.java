@@ -1,6 +1,6 @@
-package ftbqpl.utils;
+package timermolt.ftbqpl.utils;
 
-import ftbqpl.FTBQuestPrecisionLocalizerMod;
+import timermolt.ftbqpl.FTBQuestPrecisionLocalizerMod;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
