@@ -65,7 +65,7 @@ public class JSONService implements FtbQService {
                         JsonObject hoverValue = hoverEventJSON.get("contents").getAsJsonObject();
                         String hoverText = hoverValue.get("text").getAsString();
 
-                        textKey = prefix + ".rich_description.hover_text." + HandlerHelper.getCounter();
+                        textKey = prefix + ".rich_description.hover_text" + HandlerHelper.getCounter();
                         String hoverString = "\"hoverEvent\":{\"action\":\"" + hoverEventAction + "\",\"contents\":{\"translate\":\"" + textKey +"\"";
                         HandlerHelper.transKeys.put(textKey, hoverText);
 

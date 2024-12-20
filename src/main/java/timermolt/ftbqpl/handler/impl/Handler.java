@@ -1,5 +1,6 @@
 package timermolt.ftbqpl.handler.impl;
 
+import dev.ftb.mods.ftbquests.quest.QuestObjectBase;
 import dev.ftb.mods.ftbquests.quest.Chapter;
 import dev.ftb.mods.ftbquests.quest.ChapterGroup;
 import dev.ftb.mods.ftbquests.quest.Quest;
@@ -25,7 +26,7 @@ public class Handler implements FtbQHandler {
     @Override
     public void handleRewardTables(List<RewardTable> rewardTables) {
         rewardTables.forEach(rewardTable -> {
-            String textKey = HandlerHelper.getPrefix() + ".reward_table." + RewardTable.getID(rewardTable) + ".title";
+            String textKey = HandlerHelper.getPrefix() + ".reward_table." + GetHexID(rewardTable);
             transKeys.put(textKey, rewardTable.getRawTitle());
             rewardTable.setRawTitle("{" + textKey + "}");
         });
@@ -35,7 +36,7 @@ public class Handler implements FtbQHandler {
     public void handleChapterGroup(ChapterGroup chapterGroup) {
         if(chapterGroup.getTitle() != null){
             if (!chapterGroup.getRawTitle().isEmpty()){
-                String textKey = HandlerHelper.getPrefix() + ".chapter_group." + ChapterGroup.getID(chapterGroup) + ".title";
+                String textKey = HandlerHelper.getPrefix() + ".chapter_group." + GetHexID(chapterGroup);
                 transKeys.put(textKey, chapterGroup.getRawTitle());
                 chapterGroup.setRawTitle("{" + textKey + "}");
             }
@@ -45,7 +46,7 @@ public class Handler implements FtbQHandler {
     @Override
     public void handleChapter(Chapter chapter) {
         //HandlerHelper.setPrefix("ftbquests.chapter."+chapter.getFilename());
-        String prefix = HandlerHelper.getPrefix() + ".chapter." + Chapter.getID(chapter);
+        String prefix = HandlerHelper.getPrefix() + ".chapter." + GetHexID(chapter);
         if(chapter.getTitle() != null){
             transKeys.put(prefix + ".title", chapter.getRawTitle());
             chapter.setRawTitle("{" + prefix + ".title" + "}");
@@ -66,7 +67,7 @@ public class Handler implements FtbQHandler {
 
     private void handleTasks(List<Task> tasks) {
         tasks.stream().filter(task -> !task.getRawTitle().isEmpty()).forEach(task -> {
-            String textKey = HandlerHelper.getPrefix() + ".task." + Task.getID(task) + ".title";
+            String textKey = HandlerHelper.getPrefix() + ".task." + GetHexID(task);
             transKeys.put(textKey, task.getRawTitle());
             task.setRawTitle("{" + textKey + "}");
         });
@@ -74,7 +75,7 @@ public class Handler implements FtbQHandler {
     }
     private void handleRewards(List<Reward> rewards) {
         rewards.stream().filter(reward -> !reward.getRawTitle().isEmpty()).forEach(reward -> {
-            String textKey = HandlerHelper.getPrefix() + ".reward." + Reward.getID(reward) + ".title";
+            String textKey = HandlerHelper.getPrefix() + ".reward." + GetHexID(reward);
             transKeys.put(textKey, reward.getRawTitle());
             reward.setRawTitle("{"+textKey+"}");
         });
@@ -85,7 +86,7 @@ public class Handler implements FtbQHandler {
     public void handleQuests(List<Quest> allQuests) {
         allQuests.forEach(quest ->{
             //HandlerHelper.setPrefix("ftbquests.chapter." + quest.getChapter().getFilename() + ".quest" + HandlerHelper.getQuests());
-            String prefix = HandlerHelper.getPrefix() + ".quest." + Quest.getID(quest);
+            String prefix = HandlerHelper.getPrefix() + ".quest." + GetHexID(quest);
             if(quest.getTitle() != null){
                 if (!quest.getRawTitle().isEmpty()){
                     transKeys.put(prefix + ".title", quest.getRawTitle());
@@ -142,5 +143,17 @@ public class Handler implements FtbQHandler {
         transKeys.put(imgKey, desc);
         HandlerHelper.descList.add("{" + imgKey + "}");
         HandlerHelper.addImage();
+    }
+
+    /** 
+     * Quest objects IDs are returned as Longs, but are actually hex numbers in Strings in files.
+     * So this function takes care of that headache and makes sure a leading zero is maintained if it's present.
+    */
+    private String GetHexID(QuestObjectBase object) {
+        String hex_id = Long.toString(QuestObjectBase.getID(object), 16).toUpperCase();
+        if(hex_id.length() == 15) {
+            hex_id = "0" + hex_id;
+        }
+        return hex_id;
     }
 }
