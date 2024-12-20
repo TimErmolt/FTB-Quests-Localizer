@@ -8,7 +8,7 @@ import timermolt.ftbqpl.FTBQuestPrecisionLocalizerMod;
 import timermolt.ftbqpl.handler.impl.Handler;
 import timermolt.ftbqpl.utils.BackPortUtils;
 import timermolt.ftbqpl.utils.Constants;
-import timermolt.ftbqpl.utils.HandlerCounter;
+import timermolt.ftbqpl.utils.HandlerHelper;
 import timermolt.ftbqpl.utils.PackUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -23,12 +23,14 @@ import java.util.Locale;
 
 public class FTBQLangConvert {
     public static String langStr = "en_us";
+    public static String prefixStr = "ftbquests";
 
     public FTBQLangConvert(CommandDispatcher<CommandSourceStack> dispatcher) {
 
 
         dispatcher.register(Commands.literal("ftblang")
                         .then(Commands.argument("lang", StringArgumentType.word())
+                        .then(Commands.argument("prefix", StringArgumentType.word())
 
 //                .requires(s->s.getServer() != null && s.getServer().isSingleplayer() || s.hasPermission(2))
                                         .executes(ctx ->{
@@ -43,23 +45,25 @@ public class FTBQLangConvert {
                                                 File kubejsBackupFile = new File(parent,Constants.PackMCMeta.KUBEJSBACKUPFOLDER);
                                                 File mcKubeJsOut = new File(Constants.PackMCMeta.KUBEJSFOLDER);
                                                 File questsFolder = new File(Constants.PackMCMeta.GAMEDIR, Constants.PackMCMeta.QUESTFOLDER);
+                                                //File overridesFolder = new File(Constants.PackMCMeta.GAMEDIR, Constants.PackMCMeta.OVERRIDESFOLDER);
                                                 if (kubejsOutput.exists()){
-                                                    FileUtils.copyDirectory(kubejsOutput,kubejsBackupFile);
+                                                    FileUtils.copyDirectory(kubejsOutput, kubejsBackupFile);
                                                 }
                                                 langStr = ctx.getArgument("lang", String.class);
+                                                prefixStr = ctx.getArgument("prefix", String.class);
                                                 BackPortUtils.backport();
                                                 if(questsFolder.exists()){
                                                     File backup = new File(parent, Constants.PackMCMeta.BACKUPFOLDER);
                                                     FileUtils.copyDirectory(questsFolder, backup);
                                                 }
+                                                HandlerHelper.setPrefix(prefixStr);
                                                 BaseQuestFile questFile = FTBQuestsAPI.api().getQuestFile(false);
                                                 handler.handleRewardTables(questFile.getRewardTables());
                                                 questFile.forAllChapterGroups(handler::handleChapterGroup);
-                                                HandlerCounter.setCounter(0);
+                                                HandlerHelper.setCounter(0);
                                                 questFile.forAllChapters(chapter -> {
                                                     handler.handleChapter(chapter);
                                                     handler.handleQuests(chapter.getQuests());
-                                                    HandlerCounter.addChapters();
                                                 });
 
                                                 File output = new File(parent, Constants.PackMCMeta.QUESTFOLDER);
@@ -81,13 +85,13 @@ public class FTBQLangConvert {
                                         })
                         )
 
-        );
+        ));
 
     }
     private void saveLang(String lang, File parent) throws IOException
     {
         File fe = new File(parent, lang.toLowerCase(Locale.ROOT) + ".json");
-        FileUtils.write(fe, FTBQuestPrecisionLocalizerMod.gson.toJson(HandlerCounter.transKeys), StandardCharsets.UTF_8);
+        FileUtils.write(fe, FTBQuestPrecisionLocalizerMod.gson.toJson(HandlerHelper.transKeys), StandardCharsets.UTF_8);
         PackUtils.createResourcePack(fe, FMLPaths.GAMEDIR.get().toFile()+"\\FTBLang\\FTB-Quests-Localization-Resourcepack.zip");
     }
 }

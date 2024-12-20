@@ -9,7 +9,7 @@ import dev.ftb.mods.ftbquests.quest.task.Task;
 import dev.ftb.mods.ftbquests.util.TextUtils;
 import timermolt.ftbqpl.handler.FtbQHandler;
 import timermolt.ftbqpl.service.impl.JSONService;
-import timermolt.ftbqpl.utils.HandlerCounter;
+import timermolt.ftbqpl.utils.HandlerHelper;
 import net.minecraft.network.chat.Component;
 
 import java.lang.reflect.Field;
@@ -19,34 +19,33 @@ import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 public class Handler implements FtbQHandler {
-    private final TreeMap<String, String> transKeys = HandlerCounter.transKeys;
+    private final TreeMap<String, String> transKeys = HandlerHelper.transKeys;
     private final JSONService handleJSON = new JSONService();
 
     @Override
     public void handleRewardTables(List<RewardTable> rewardTables) {
         rewardTables.forEach(rewardTable -> {
-            HandlerCounter.addCounter();
-            transKeys.put("ftbquests.loot_table.title"+HandlerCounter.getCounter(), rewardTable.getRawTitle());
-            rewardTable.setRawTitle("{" + "ftbquests.loot_table.title" + HandlerCounter.getCounter() + "}");
+            String textKey = HandlerHelper.getPrefix() + ".reward_table." + RewardTable.getID(rewardTable) + ".title";
+            transKeys.put(textKey, rewardTable.getRawTitle());
+            rewardTable.setRawTitle("{" + textKey + "}");
         });
-        HandlerCounter.setCounter(0);
     }
 
     @Override
     public void handleChapterGroup(ChapterGroup chapterGroup) {
         if(chapterGroup.getTitle() != null){
             if (!chapterGroup.getRawTitle().isEmpty()){
-                transKeys.put("ftbquests.chapter_groups.title" + HandlerCounter.getCounter(), chapterGroup.getRawTitle());
-                chapterGroup.setRawTitle("{" + "ftbquests.chapter_groups.title" + HandlerCounter.getCounter() + "}");
-                HandlerCounter.addCounter();
+                String textKey = HandlerHelper.getPrefix() + ".chapter_group." + ChapterGroup.getID(chapterGroup) + ".title";
+                transKeys.put(textKey, chapterGroup.getRawTitle());
+                chapterGroup.setRawTitle("{" + textKey + "}");
             }
         }
     }
 
     @Override
     public void handleChapter(Chapter chapter) {
-        HandlerCounter.setPrefix("ftbquests.chapter."+chapter.getFilename());
-        String prefix = HandlerCounter.getPrefix();
+        //HandlerHelper.setPrefix("ftbquests.chapter."+chapter.getFilename());
+        String prefix = HandlerHelper.getPrefix() + ".chapter." + Chapter.getID(chapter);
         if(chapter.getTitle() != null){
             transKeys.put(prefix + ".title", chapter.getRawTitle());
             chapter.setRawTitle("{" + prefix + ".title" + "}");
@@ -67,29 +66,26 @@ public class Handler implements FtbQHandler {
 
     private void handleTasks(List<Task> tasks) {
         tasks.stream().filter(task -> !task.getRawTitle().isEmpty()).forEach(task -> {
-            HandlerCounter.addCounter();
-            String textKey = HandlerCounter.getPrefix() + ".task.title" + HandlerCounter.getCounter();
+            String textKey = HandlerHelper.getPrefix() + ".task." + Task.getID(task) + ".title";
             transKeys.put(textKey, task.getRawTitle());
-            task.setRawTitle("{"+textKey+"}");
+            task.setRawTitle("{" + textKey + "}");
         });
-        HandlerCounter.setCounter(0);
+        HandlerHelper.setCounter(0);
     }
     private void handleRewards(List<Reward> rewards) {
         rewards.stream().filter(reward -> !reward.getRawTitle().isEmpty()).forEach(reward -> {
-            HandlerCounter.addCounter();
-            String textKey = HandlerCounter.getPrefix() + ".reward.title" + HandlerCounter.getCounter();
+            String textKey = HandlerHelper.getPrefix() + ".reward." + Reward.getID(reward) + ".title";
             transKeys.put(textKey, reward.getRawTitle());
             reward.setRawTitle("{"+textKey+"}");
         });
-        HandlerCounter.setCounter(0);
+        HandlerHelper.setCounter(0);
     }
 
     @Override
     public void handleQuests(List<Quest> allQuests) {
         allQuests.forEach(quest ->{
-            HandlerCounter.addQuests();
-            HandlerCounter.setPrefix("ftbquests.chapter." + quest.getChapter().getFilename() + ".quest" + HandlerCounter.getQuests());
-            String prefix = HandlerCounter.getPrefix();
+            //HandlerHelper.setPrefix("ftbquests.chapter." + quest.getChapter().getFilename() + ".quest" + HandlerHelper.getQuests());
+            String prefix = HandlerHelper.getPrefix() + ".quest." + Quest.getID(quest);
             if(quest.getTitle() != null){
                 if (!quest.getRawTitle().isEmpty()){
                     transKeys.put(prefix + ".title", quest.getRawTitle());
@@ -102,48 +98,49 @@ public class Handler implements FtbQHandler {
             }
             handleTasks(quest.getTasksAsList());
             handleRewards(quest.getRewards().stream().toList());
-            handleQuestDescriptions(quest.getRawDescription());
+            handleQuestDescriptions(quest.getRawDescription(), prefix);
 
             quest.getRawDescription().clear();
-            quest.getRawDescription().addAll(HandlerCounter.descList);
-            HandlerCounter.descList.clear();
+            quest.getRawDescription().addAll(HandlerHelper.descList);
+            HandlerHelper.descList.clear();
         });
-        HandlerCounter.setQuests(0);
     }
 
-    private void handleQuestDescriptions(List<String> descriptions) {
+    private void handleQuestDescriptions(List<String> descriptions, String prefix) {
         String rich_desc_regex = "\\s*[\\[\\{].*\"+.*[\\]\\}]\\s*";
         Pattern rich_desc_pattern = Pattern.compile(rich_desc_regex);
+
         descriptions.forEach(desc -> {
 
             if (desc.isBlank()) {
-                HandlerCounter.descList.add("");
+                HandlerHelper.descList.add("");
             }
             else if (desc.contains("{image:")){
-                handleDescriptionImage(desc);
+                handleDescriptionImage(desc, prefix);
             }
             else if(desc.contains("{@pagebreak}")){
-                HandlerCounter.descList.add(desc);
+                HandlerHelper.descList.add(desc);
             }
             else if(rich_desc_pattern.matcher(desc).find()){
-                HandlerCounter.addDescription();
+                HandlerHelper.addDescription();
                 Component parsedText = TextUtils.parseRawText(desc);
-                handleJSON.handleJSON(parsedText);
+                handleJSON.handleJSON(parsedText, prefix);
             }
             else {
-                HandlerCounter.addDescription();
-                String textKey = HandlerCounter.getPrefix() + ".description" + HandlerCounter.getDescription();
+                HandlerHelper.addDescription();
+                String textKey = prefix + ".description" + HandlerHelper.getDescription();
                 transKeys.put(textKey, desc);
-                HandlerCounter.descList.add("{"+textKey+"}");
+                HandlerHelper.descList.add("{"+textKey+"}");
             }
         });
-        HandlerCounter.setDescription(0);
-        HandlerCounter.setImage(0);
+        HandlerHelper.setDescription(0);
+        HandlerHelper.setImage(0);
     }
-    private void handleDescriptionImage(String desc){
-        String imgKey = HandlerCounter.getPrefix() + ".image" + HandlerCounter.getImage();
+
+    private void handleDescriptionImage(String desc, String prefix) {
+        String imgKey = prefix + ".image" + HandlerHelper.getImage();
         transKeys.put(imgKey, desc);
-        HandlerCounter.descList.add("{" + imgKey + "}");
-        HandlerCounter.addImage();
+        HandlerHelper.descList.add("{" + imgKey + "}");
+        HandlerHelper.addImage();
     }
 }

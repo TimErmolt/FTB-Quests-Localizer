@@ -7,11 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
-public class HandlerCounter {
+public class HandlerHelper {
     public static final TreeMap<String, String> transKeys = new TreeMap<>();
     private static String prefix;
-    private static int chapters = 0;
-    private static int quests = 0;
     private static int counter = 0;
     private static int description = 0;
     private static int image = 0;
@@ -19,7 +17,7 @@ public class HandlerCounter {
 
     public static Logger log = FTBQuestPrecisionLocalizerMod.log;
 
-    private HandlerCounter() {
+    private HandlerHelper() {
     }
 
     public static String getPrefix() {
@@ -27,29 +25,7 @@ public class HandlerCounter {
     }
 
     public static void setPrefix(String prefix) {
-        HandlerCounter.prefix = prefix;
-    }
-
-    public static int getChapters() {
-        return chapters;
-    }
-
-    public static void setChapters(int chapters) {
-        HandlerCounter.chapters = chapters;
-    }
-
-    public static void addChapters(){
-        HandlerCounter.chapters++;
-    }
-    public static int getQuests() {
-        return quests;
-    }
-
-    public static void setQuests(int quests) {
-        HandlerCounter.quests = quests;
-    }
-    public static void addQuests(){
-        HandlerCounter.quests++;
+        HandlerHelper.prefix = prefix;
     }
 
     public static int getCounter() {
@@ -57,10 +33,10 @@ public class HandlerCounter {
     }
 
     public static void setCounter(int counter) {
-        HandlerCounter.counter = counter;
+        HandlerHelper.counter = counter;
     }
     public static void addCounter() {
-        HandlerCounter.counter++;
+        HandlerHelper.counter++;
     }
 
     public static int getDescription() {
@@ -68,19 +44,19 @@ public class HandlerCounter {
     }
 
     public static void setDescription(int description) {
-        HandlerCounter.description = description;
+        HandlerHelper.description = description;
     }
     public static void addDescription() {
-        HandlerCounter.description++;
+        HandlerHelper.description++;
     }
     public static int getImage() {
         return image++;
     }
 
     public static void setImage(int image) {
-        HandlerCounter.image = image;
+        HandlerHelper.image = image;
     }
     public static void addImage() {
-        HandlerCounter.image++;
+        HandlerHelper.image++;
     }
 }

@@ -3,7 +3,7 @@ package timermolt.ftbqpl.service.impl;
 import com.google.gson.JsonObject;
 //import com.mojang.serialization.JsonOps;
 import timermolt.ftbqpl.service.FtbQService;
-import timermolt.ftbqpl.utils.HandlerCounter;
+import timermolt.ftbqpl.utils.HandlerHelper;
 //import net.minecraft.Util;
 import net.minecraft.network.chat.*;
 
@@ -11,13 +11,13 @@ import java.util.List;
 
 public class JSONService implements FtbQService {
     @Override
-    public void handleJSON(Component parsedText) {
+    public void handleJSON(Component parsedText, String prefix) {
         try{
             String jsonString;
             List<Component> flatList = parsedText.toFlatList();
             StringBuilder jsonStringBuilder = new StringBuilder("[\"\",");
             for(Component c : flatList){
-                HandlerCounter.addCounter();
+                HandlerHelper.addCounter();
                 String text = c.getContents().toString().substring(8, c.getContents().toString().length() -1);
                 Style style = c.getStyle();
 
@@ -42,8 +42,8 @@ public class JSONService implements FtbQService {
                     if (style.isObfuscated()){
                         jsonStringBuilder.append("\"obfuscated\":"+ 1).append(",");
                     }
-                    String textKey = HandlerCounter.getPrefix() + ".rich_description" + HandlerCounter.getCounter();
-                    HandlerCounter.transKeys.put(textKey, text);
+                    String textKey = prefix + ".rich_description" + HandlerHelper.getCounter();
+                    HandlerHelper.transKeys.put(textKey, text);
 
 
                     ClickEvent clickEvent = style.getClickEvent();
@@ -65,26 +65,26 @@ public class JSONService implements FtbQService {
                         JsonObject hoverValue = hoverEventJSON.get("contents").getAsJsonObject();
                         String hoverText = hoverValue.get("text").getAsString();
 
-                        textKey = HandlerCounter.getPrefix() + ".rich_description.hover_text." + HandlerCounter.getCounter();
+                        textKey = prefix + ".rich_description.hover_text." + HandlerHelper.getCounter();
                         String hoverString = "\"hoverEvent\":{\"action\":\"" + hoverEventAction + "\",\"contents\":{\"translate\":\"" + textKey +"\"";
-                        HandlerCounter.transKeys.put(textKey, hoverText);
+                        HandlerHelper.transKeys.put(textKey, hoverText);
 
                         hoverString += "}},";
                         jsonStringBuilder.append(hoverString);
                     }
                 }
                 else{
-                    String textKey = HandlerCounter.getPrefix() + ".rich_description" + HandlerCounter.getCounter();
-                    HandlerCounter.transKeys.put(textKey, text);
+                    String textKey = prefix + ".rich_description" + HandlerHelper.getCounter();
+                    HandlerHelper.transKeys.put(textKey, text);
                     jsonStringBuilder.append("{\"translate\":\"").append(textKey).append("\"},");
                 }
             }
             jsonString = jsonStringBuilder.toString();
             jsonString = jsonString.substring(0, jsonString.length()-1);
             jsonString += "]";
-            HandlerCounter.descList.add(jsonString);
+            HandlerHelper.descList.add(jsonString);
         }catch(Exception e){
-            HandlerCounter.log.info(e.getMessage());
+            HandlerHelper.log.info(e.getMessage());
         }
     }
 }
