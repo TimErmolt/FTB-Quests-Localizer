@@ -1,41 +1,44 @@
-# Thanks
-- [Horeak](https://github.com/Horeak)
-- [TheonlyTazz](https://github.com/TheonlyTazz)
-- [Mrbysco](https://github.com/Mrbysco)
-# Original creator permission
-![permission](https://pic.imgdb.cn/item/66a6e477d9c307b7e9946cd6.png "permission")
+# Overview
 
-# 概述
+This is a fork of [FTB Quests Localizer](https://github.com/Litchiiiiii/FTB-Quests-Localizer) by [Litchiiiiii](https://github.com/Litchiiiiii),
 
-这是FTB-Quests-Localization（未实现）的 fork，一个 FTBQuest 本地化 Mod。
+which is a fork of [FTB Quests Localization](https://github.com/Mrbysco/FTB-Quests-Localization) by [Mrbysco](https://github.com/Mrbysco),
 
-# 如何使用
+which is a fork of [FTB Quests Localization](https://github.com/TheonlyTazz/FTB-Quests-Localization) by [TheonlyTazz](https://github.com/TheonlyTazz),
 
-在聊天栏中输入 /ftblang <lang> 指令，如 /ftblang en_us；
+which is a fork of the now-archived [FTB Quest Language Generator](https://github.com/Horeak/ftb-quest-lang-generator) by [Horeak](https://github.com/Horeak),
 
-等待屏幕中弹出导出路径提示，即表示导出成功；
+all distributed under the MIT license, as is this repository.
 
-根据提示的导出路径找到并打开 FTBLang 文件夹，把其中的 config/ftbquests 覆盖于游戏根目录；
+### README.md has been machine translated from Simplified Chinese via Google Translate and, as such, may contain inaccuracies. Translation QA pending.
 
-如果安装 KubeJS 则把 kubeJS 目录下的文件复制到游戏根目录下的 kubeJS 目录；
+# How to use
 
-若未安装 KubeJS，也可选择使用 resourcepack，把 FTBLang 目录下的资源包放入游戏根目录资源包文件夹中即可。
+Enter the /ftblang <lang> command in the chat bar, such as /ftblang en_us;
 
-# 导出目录
+Wait for the export path prompt to pop up on the screen, which means the export is successful;
+
+Find and open the FTBLang folder according to the export path prompt, and overwrite the config/ftbquests in the game root directory;
+
+If KubeJS is installed, copy the files in the kubeJS directory to the kubeJS directory in the game root directory;
+
+If KubeJS is not installed, you can also choose to use resourcepack, and put the resource pack in the FTBLang directory into the resource pack folder in the game root directory.
+
+# Export directory
 <img src = "https://i.mcmod.cn/editor/upload/20240727/1722069732_703112_cUTy.png"/>
 
-backup 文件夹中为原始 ftbquests 文件；
+The backup folder contains the original ftbquests file;
 
-config 文件夹为导出后的 ftbquests 文件；
+The config folder contains the exported ftbquests file;
 
-kubejs 文件夹为 kubejs 相关语言文件；
+The kubejs folder contains the kubejs-related language files;
 
-FTB-Quests-Localization-Resourcepack 为语言资源包文件。
+FTB-Quests-Localization-Resourcepack is the language resource pack file.
 
-# 后续操作
+# Subsequent operations
 
-只需翻译语言文件即可完成任务翻译。
+You only need to translate the language file to complete the task translation.
 
-# 其他
+# Others
 
-若出现漏提取或富文本提取出现问题请及时反馈。
+Please provide feedback in time if there is any problem with missing extraction or rich text extraction.
