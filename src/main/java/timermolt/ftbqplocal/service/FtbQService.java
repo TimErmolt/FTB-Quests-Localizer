@@ -1,4 +1,4 @@
-package me.litchi.ftbqlocal.service;
+package ftbqpl.service;
 
 import net.minecraft.network.chat.Component;
 

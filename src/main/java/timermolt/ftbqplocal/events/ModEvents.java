@@ -1,7 +1,7 @@
-package me.litchi.ftbqlocal.events;
+package ftbqpl.events;
 
 
-import me.litchi.ftbqlocal.commands.FTBQLangConvert;
+import ftbqpl.commands.FTBQLangConvert;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.command.ConfigCommand;

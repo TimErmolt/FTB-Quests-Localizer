@@ -1,9 +1,9 @@
-package me.litchi.ftbqlocal.service.impl;
+package ftbqpl.service.impl;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
-import me.litchi.ftbqlocal.service.FtbQService;
-import me.litchi.ftbqlocal.utils.HandlerCounter;
+import ftbqpl.service.FtbQService;
+import ftbqpl.utils.HandlerCounter;
 import net.minecraft.Util;
 import net.minecraft.network.chat.*;
 

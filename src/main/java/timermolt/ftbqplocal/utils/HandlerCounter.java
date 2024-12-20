@@ -1,6 +1,6 @@
-package me.litchi.ftbqlocal.utils;
+package ftbqpl.utils;
 
-import me.litchi.ftbqlocal.FtbQuestLocalizerMod;
+import ftbqpl.FTBQuestPrecisionLocalizerMod;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class HandlerCounter {
     private static int image = 0;
     public static List<String> descList = new ArrayList<>();
 
-    public static Logger log = FtbQuestLocalizerMod.log;
+    public static Logger log = FTBQuestPrecisionLocalizerMod.log;
 
     private HandlerCounter() {
     }

@@ -1,4 +1,4 @@
-package me.litchi.ftbqlocal.handler;
+package ftbqpl.handler;
 
 import dev.ftb.mods.ftbquests.quest.Chapter;
 import dev.ftb.mods.ftbquests.quest.ChapterGroup;

@@ -1,4 +1,4 @@
-package me.litchi.ftbqlocal.handler.impl;
+package ftbqpl.handler.impl;
 
 import dev.ftb.mods.ftbquests.quest.Chapter;
 import dev.ftb.mods.ftbquests.quest.ChapterGroup;
@@ -7,9 +7,9 @@ import dev.ftb.mods.ftbquests.quest.loot.RewardTable;
 import dev.ftb.mods.ftbquests.quest.reward.Reward;
 import dev.ftb.mods.ftbquests.quest.task.Task;
 import dev.ftb.mods.ftbquests.util.TextUtils;
-import me.litchi.ftbqlocal.handler.FtbQHandler;
-import me.litchi.ftbqlocal.service.impl.JSONService;
-import me.litchi.ftbqlocal.utils.HandlerCounter;
+import ftbqpl.handler.FtbQHandler;
+import ftbqpl.service.impl.JSONService;
+import ftbqpl.utils.HandlerCounter;
 import net.minecraft.network.chat.Component;
 
 import java.lang.reflect.Field;

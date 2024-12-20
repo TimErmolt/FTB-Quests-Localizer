@@ -1,4 +1,4 @@
-package me.litchi.ftbqlocal.utils;
+package ftbqpl.utils;
 
 import dev.architectury.platform.Platform;
 

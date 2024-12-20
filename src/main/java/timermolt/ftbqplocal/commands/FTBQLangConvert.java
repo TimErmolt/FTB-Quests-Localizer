@@ -1,15 +1,15 @@
-package me.litchi.ftbqlocal.commands;
+package ftbqpl.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import dev.ftb.mods.ftbquests.api.FTBQuestsAPI;
 import dev.ftb.mods.ftbquests.quest.*;
-import me.litchi.ftbqlocal.FtbQuestLocalizerMod;
-import me.litchi.ftbqlocal.handler.impl.Handler;
-import me.litchi.ftbqlocal.utils.BackPortUtils;
-import me.litchi.ftbqlocal.utils.Constants;
-import me.litchi.ftbqlocal.utils.HandlerCounter;
-import me.litchi.ftbqlocal.utils.PackUtils;
+import ftbqpl.FTBQuestPrecisionLocalizerMod;
+import ftbqpl.handler.impl.Handler;
+import ftbqpl.utils.BackPortUtils;
+import ftbqpl.utils.Constants;
+import ftbqpl.utils.HandlerCounter;
+import ftbqpl.utils.PackUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -87,7 +87,7 @@ public class FTBQLangConvert {
     private void saveLang(String lang, File parent) throws IOException
     {
         File fe = new File(parent, lang.toLowerCase(Locale.ROOT) + ".json");
-        FileUtils.write(fe, FtbQuestLocalizerMod.gson.toJson(HandlerCounter.transKeys), StandardCharsets.UTF_8);
+        FileUtils.write(fe, FTBQuestPrecisionLocalizerMod.gson.toJson(HandlerCounter.transKeys), StandardCharsets.UTF_8);
         PackUtils.createResourcePack(fe, FMLPaths.GAMEDIR.get().toFile()+"\\FTBLang\\FTB-Quests-Localization-Resourcepack.zip");
     }
 }
