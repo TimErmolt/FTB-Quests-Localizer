@@ -1,6 +1,5 @@
 package timermolt.ftbqpl.handler.impl;
 
-import dev.ftb.mods.ftbquests.quest.QuestObjectBase;
 import dev.ftb.mods.ftbquests.quest.Chapter;
 import dev.ftb.mods.ftbquests.quest.ChapterGroup;
 import dev.ftb.mods.ftbquests.quest.Quest;
@@ -23,10 +22,20 @@ public class Handler implements FtbQHandler {
     private final TreeMap<String, String> transKeys = HandlerHelper.transKeys;
     private final JSONService handleJSON = new JSONService();
 
+    /**
+     * The folder in which Handler is working right now.
+    */
+    public String current_folder = "config";
+
+    public Handler(String folder) {
+        current_folder = folder;
+    }
+
     @Override
     public void handleRewardTables(List<RewardTable> rewardTables) {
         rewardTables.forEach(rewardTable -> {
-            String textKey = HandlerHelper.getPrefix() + ".reward_table." + GetHexID(rewardTable);
+            String textKey = HandlerHelper.getPrefix() + ".reward_table." + RewardTable.getCodeString(rewardTable);
+            textKey += AddOverrideNameIfNeeded(textKey, rewardTable.getRawTitle());
             transKeys.put(textKey, rewardTable.getRawTitle());
             rewardTable.setRawTitle("{" + textKey + "}");
         });
@@ -36,7 +45,8 @@ public class Handler implements FtbQHandler {
     public void handleChapterGroup(ChapterGroup chapterGroup) {
         if(chapterGroup.getTitle() != null){
             if (!chapterGroup.getRawTitle().isEmpty()){
-                String textKey = HandlerHelper.getPrefix() + ".chapter_group." + GetHexID(chapterGroup);
+                String textKey = HandlerHelper.getPrefix() + ".chapter_group." + ChapterGroup.getCodeString(chapterGroup);
+                textKey += AddOverrideNameIfNeeded(textKey, chapterGroup.getRawTitle());
                 transKeys.put(textKey, chapterGroup.getRawTitle());
                 chapterGroup.setRawTitle("{" + textKey + "}");
             }
@@ -46,13 +56,15 @@ public class Handler implements FtbQHandler {
     @Override
     public void handleChapter(Chapter chapter) {
         //HandlerHelper.setPrefix("ftbquests.chapter."+chapter.getFilename());
-        String prefix = HandlerHelper.getPrefix() + ".chapter." + GetHexID(chapter);
+        String prefix = HandlerHelper.getPrefix() + ".chapter." + Chapter.getCodeString(chapter);
         if(chapter.getTitle() != null){
-            transKeys.put(prefix + ".title", chapter.getRawTitle());
-            chapter.setRawTitle("{" + prefix + ".title" + "}");
+            String title_prefix = prefix + AddOverrideNameIfNeeded(prefix + ".title", chapter.getRawTitle());
+            transKeys.put(title_prefix + ".title", chapter.getRawTitle());
+            chapter.setRawTitle("{" + title_prefix + ".title" + "}");
         }
         if(!chapter.getRawSubtitle().isEmpty()){
-            transKeys.put(prefix + ".subtitle", String.join("\n", chapter.getRawSubtitle()));
+            String subtitle_prefix = prefix + AddOverrideNameIfNeeded(prefix + ".subtitle", String.join("\n", chapter.getRawSubtitle()));
+            transKeys.put(subtitle_prefix + ".subtitle", String.join("\n", chapter.getRawSubtitle()));
             try {
                 Field rawSubtitle = chapter.getClass().getDeclaredField("rawSubtitle");
                 rawSubtitle.setAccessible(true);
@@ -67,7 +79,8 @@ public class Handler implements FtbQHandler {
 
     private void handleTasks(List<Task> tasks) {
         tasks.stream().filter(task -> !task.getRawTitle().isEmpty()).forEach(task -> {
-            String textKey = HandlerHelper.getPrefix() + ".task." + GetHexID(task);
+            String textKey = HandlerHelper.getPrefix() + ".task." + Task.getCodeString(task);
+            textKey += AddOverrideNameIfNeeded(textKey, task.getRawTitle());
             transKeys.put(textKey, task.getRawTitle());
             task.setRawTitle("{" + textKey + "}");
         });
@@ -75,9 +88,10 @@ public class Handler implements FtbQHandler {
     }
     private void handleRewards(List<Reward> rewards) {
         rewards.stream().filter(reward -> !reward.getRawTitle().isEmpty()).forEach(reward -> {
-            String textKey = HandlerHelper.getPrefix() + ".reward." + GetHexID(reward);
+            String textKey = HandlerHelper.getPrefix() + ".reward." + Reward.getCodeString(reward);
+            textKey += AddOverrideNameIfNeeded(textKey, reward.getRawTitle());
             transKeys.put(textKey, reward.getRawTitle());
-            reward.setRawTitle("{"+textKey+"}");
+            reward.setRawTitle("{" + textKey + "}");
         });
         HandlerHelper.setCounter(0);
     }
@@ -86,16 +100,18 @@ public class Handler implements FtbQHandler {
     public void handleQuests(List<Quest> allQuests) {
         allQuests.forEach(quest ->{
             //HandlerHelper.setPrefix("ftbquests.chapter." + quest.getChapter().getFilename() + ".quest" + HandlerHelper.getQuests());
-            String prefix = HandlerHelper.getPrefix() + ".quest." + GetHexID(quest);
+            String prefix = HandlerHelper.getPrefix() + ".quest." + Quest.getCodeString(quest);
             if(quest.getTitle() != null){
                 if (!quest.getRawTitle().isEmpty()){
-                    transKeys.put(prefix + ".title", quest.getRawTitle());
-                    quest.setRawTitle("{" + prefix + ".title" + "}");
+                    String title_prefix = prefix + AddOverrideNameIfNeeded(prefix + ".title", quest.getRawTitle());
+                    transKeys.put(title_prefix + ".title", quest.getRawTitle());
+                    quest.setRawTitle("{" + title_prefix + ".title" + "}");
                 }
             }
             if(!quest.getRawSubtitle().isEmpty()){
-                transKeys.put(prefix + ".subtitle", quest.getRawSubtitle());
-                quest.setRawSubtitle("{" + prefix + ".subtitle" + "}");
+                String subtitle_prefix = prefix + AddOverrideNameIfNeeded(prefix + ".subtitle", quest.getRawSubtitle());
+                transKeys.put(subtitle_prefix + ".subtitle", quest.getRawSubtitle());
+                quest.setRawSubtitle("{" + subtitle_prefix + ".subtitle" + "}");
             }
             handleTasks(quest.getTasksAsList());
             handleRewards(quest.getRewards().stream().toList());
@@ -130,8 +146,9 @@ public class Handler implements FtbQHandler {
             else {
                 HandlerHelper.addDescription();
                 String textKey = prefix + ".description" + HandlerHelper.getDescription();
+                textKey += AddOverrideNameIfNeeded(textKey, desc);
                 transKeys.put(textKey, desc);
-                HandlerHelper.descList.add("{"+textKey+"}");
+                HandlerHelper.descList.add("{" + textKey + "}");
             }
         });
         HandlerHelper.setDescription(0);
@@ -140,20 +157,30 @@ public class Handler implements FtbQHandler {
 
     private void handleDescriptionImage(String desc, String prefix) {
         String imgKey = prefix + ".image" + HandlerHelper.getImage();
+        imgKey += AddOverrideNameIfNeeded(imgKey, desc);
         transKeys.put(imgKey, desc);
         HandlerHelper.descList.add("{" + imgKey + "}");
         HandlerHelper.addImage();
     }
 
-    /** 
-     * Quest objects IDs are returned as Longs, but are actually hex numbers in Strings in files.
-     * So this function takes care of that headache and makes sure a leading zero is maintained if it's present.
+    /**
+     * Compares the given element at given id to the main quests config.
+     * `TRUE` if elements matches;
+     * `FALSE` otherwise
     */
-    private String GetHexID(QuestObjectBase object) {
-        String hex_id = Long.toString(QuestObjectBase.getID(object), 16).toUpperCase();
-        if(hex_id.length() == 15) {
-            hex_id = "0" + hex_id;
+    private Boolean SameInMainConfig(String id, String element) {
+        if(element.isEmpty() || element.equals(transKeys.get(id))) {
+            return true;
         }
-        return hex_id;
+        return false;
+    }
+    /**
+     * Returns `current_folder` if the given element at given id is not the same in main quests config and Handler is currently not working in it.
+    */
+    private String AddOverrideNameIfNeeded(String id, String element) {
+        if(current_folder != "config" && !SameInMainConfig(id, element)) {
+            return "." + current_folder;
+        }
+        return "";
     }
 }
