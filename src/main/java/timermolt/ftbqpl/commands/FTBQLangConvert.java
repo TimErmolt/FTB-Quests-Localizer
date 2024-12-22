@@ -144,7 +144,7 @@ public class FTBQLangConvert {
         saveLang(lang + (is_main_config ? "" : "_" + current_mode), kubejsOutput);
 
         // If we've just generated a lang file not for `en_us` -- make `en_us`, too!
-        if(!langStr.equalsIgnoreCase("en_us")){
+        if(!langStr.toLowerCase().equals("en_us")){
             saveLang("en_us" + (is_main_config ? "" : "_" + current_mode), kubejsOutput);
         }
     }
