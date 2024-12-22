@@ -9,7 +9,7 @@ import timermolt.ftbqpl.handler.impl.Handler;
 import timermolt.ftbqpl.utils.BackPortUtils;
 import timermolt.ftbqpl.utils.Constants;
 import timermolt.ftbqpl.utils.HandlerHelper;
-import timermolt.ftbqpl.utils.PackUtils;
+//import timermolt.ftbqpl.utils.PackUtils;
 //import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -18,7 +18,7 @@ import net.minecraft.network.chat.Component;
 //import net.minecraft.network.chat.OutgoingChatMessage;
 //import net.minecraft.network.chat.PlayerChatMessage;
 //import net.minecraft.client.player.LocalPlayer;
-import net.minecraftforge.fml.loading.FMLPaths;
+//import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -26,14 +26,15 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 public class FTBQLangConvert {
     public static String langStr = "en_us";
     public static String prefixStr = "ftbquests";
+    public static String current_mode = "normal";
 
-    private static final Logger log = LoggerFactory.getLogger(BackPortUtils.class);
+    //private static final Logger log = LoggerFactory.getLogger(BackPortUtils.class);
 
     public FTBQLangConvert(CommandDispatcher<CommandSourceStack> dispatcher) {
 
@@ -41,6 +42,7 @@ public class FTBQLangConvert {
         dispatcher.register(Commands.literal("ftblang")
                         .then(Commands.argument("lang", StringArgumentType.word())
                         .then(Commands.argument("prefix", StringArgumentType.word())
+                        .then(Commands.argument("current_mode", StringArgumentType.word())
 
 //                .requires(s->s.getServer() != null && s.getServer().isSingleplayer() || s.hasPermission(2))
                                         .executes(ctx ->{
@@ -51,13 +53,14 @@ public class FTBQLangConvert {
                                                 serverQuestFile.saveNow();
                                                 File parent = new File(Constants.PackMCMeta.GAMEDIR, Constants.PackMCMeta.OUTPUTFOLDER);
                                                 File questsFolder = new File(Constants.PackMCMeta.GAMEDIR, "config\\" + Constants.PackMCMeta.QUESTFOLDER);
-                                                File overridesFolder = new File(Constants.PackMCMeta.GAMEDIR, Constants.PackMCMeta.OVERRIDESFOLDER);
+                                                //File overridesFolder = new File(Constants.PackMCMeta.GAMEDIR, Constants.PackMCMeta.OVERRIDESFOLDER);
 
                                                 langStr = ctx.getArgument("lang", String.class);
                                                 prefixStr = ctx.getArgument("prefix", String.class);
+                                                current_mode = ctx.getArgument("current_mode", String.class);
                                                 BackPortUtils.backport();
                                                 
-                                                ConvertQuestsInFolder(questsFolder, langStr, prefixStr, "config");
+                                                ConvertQuestsInFolder(questsFolder, langStr, prefixStr, current_mode);
 
                                                 //LocalPlayer player = Minecraft.getInstance().player;
 
@@ -97,23 +100,24 @@ public class FTBQLangConvert {
                                         })
                         )
 
-        ));
+        )));
 
     }
     private void saveLang(String lang, File parent) throws IOException
     {
         File fe = new File(parent, lang.toLowerCase(Locale.ROOT) + ".json");
         FileUtils.write(fe, FTBQuestPrecisionLocalizerMod.gson.toJson(HandlerHelper.transKeys), StandardCharsets.UTF_8);
-        PackUtils.createResourcePack(fe, FMLPaths.GAMEDIR.get().toFile()+"\\FTBLang\\FTB-Quests-Localization-Resourcepack.zip");
+
+        // Resourcepack creation got broken by something. I'm not sure what. It's disabled for now. ~TE 22.12.2024
+        // PackUtils.createResourcePack(fe, FMLPaths.GAMEDIR.get().toFile()+"\\FTBLang\\FTB-Quests-Localization-Resourcepack.zip");
     }
 
-    private void ConvertQuestsInFolder(File folder, String lang, String prefix, String folder_name) throws IOException {
-        Handler handler = new Handler(folder_name);
+    private void ConvertQuestsInFolder(File folder, String lang, String prefix, String current_mode) throws IOException {
+        Handler handler = new Handler(current_mode, lang);
         File parent = new File(Constants.PackMCMeta.GAMEDIR, Constants.PackMCMeta.OUTPUTFOLDER);
         File kubejsOutput = new File(parent, Constants.PackMCMeta.KUBEJSFOLDER);
         File kubejsBackupFile = new File(parent, Constants.PackMCMeta.KUBEJSBACKUPFOLDER);
-        //File mcKubeJsOut = new File(Constants.PackMCMeta.KUBEJSFOLDER);
-        Boolean is_main_config = (folder_name == "config"); 
+        Boolean is_main_config = (current_mode.equals("normal")); 
 
         if (kubejsOutput.exists()){
             FileUtils.copyDirectory(kubejsOutput, kubejsBackupFile);
@@ -125,7 +129,7 @@ public class FTBQLangConvert {
         }
         HandlerHelper.setPrefix(prefix);
         BaseQuestFile questFile = FTBQuestsAPI.api().getQuestFile(false);
-        log.info("Quest file for folder " + folder_name + " is " + questFile.getPath());
+        //log.info("Quest file for folder " + current_mode + " is " + questFile.getPath());
         handler.handleRewardTables(questFile.getRewardTables());
         questFile.forAllChapterGroups(handler::handleChapterGroup);
         HandlerHelper.setCounter(0);
@@ -134,15 +138,14 @@ public class FTBQLangConvert {
             handler.handleQuests(chapter.getQuests());
         });
 
-        File output = new File(parent, (is_main_config ? "config\\" : (Constants.PackMCMeta.OVERRIDESFOLDER + folder_name + "\\" + Constants.PackMCMeta.QUESTFOLDER)));
-        //File output2 = new File(Constants.PackMCMeta.GAMEDIR, (is_main_config ? "config\\" : (folder.getPath() + "\\")) + Constants.PackMCMeta.QUESTFOLDER);
+        File output = new File(parent, (is_main_config ? "config\\" : (Constants.PackMCMeta.OVERRIDESFOLDER + current_mode + "\\" + Constants.PackMCMeta.QUESTFOLDER)));
         questFile.writeDataFull(output.toPath());
-        //questFile.writeDataFull(output2.toPath());
         ServerQuestFile.INSTANCE.load();
-        saveLang(lang, kubejsOutput);
-        //saveLang(lang, mcKubeJsOut);
+        saveLang(lang + (is_main_config ? "" : "_" + current_mode), kubejsOutput);
+
+        // If we've just generated a lang file not for `en_us` -- make `en_us`, too!
         if(!langStr.equalsIgnoreCase("en_us")){
-            saveLang("en_us", kubejsOutput);
+            saveLang("en_us" + (is_main_config ? "" : "_" + current_mode), kubejsOutput);
         }
     }
 }

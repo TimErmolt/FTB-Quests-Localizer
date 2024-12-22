@@ -10,34 +10,65 @@ import dev.ftb.mods.ftbquests.util.TextUtils;
 import timermolt.ftbqpl.handler.FtbQHandler;
 import timermolt.ftbqpl.service.impl.JSONService;
 import timermolt.ftbqpl.utils.HandlerHelper;
+import timermolt.ftbqpl.utils.BackPortUtils;
+import timermolt.ftbqpl.utils.Constants;
 import net.minecraft.network.chat.Component;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+//import java.io.FileReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
+import java.util.HashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.gson.*;
 
 public class Handler implements FtbQHandler {
     private final TreeMap<String, String> transKeys = HandlerHelper.transKeys;
     private final JSONService handleJSON = new JSONService();
+    private static final Logger log = LoggerFactory.getLogger(BackPortUtils.class);
 
     /**
      * The folder in which Handler is working right now.
     */
-    public String current_folder = "config";
+    public String current_mode = "normal";
+    private Gson gson = new Gson();
+    private HashMap<String, String> main_lang_file;
 
-    public Handler(String folder) {
-        current_folder = folder;
+    public Handler(String mode, String lang) {
+        current_mode = mode;
+        if(current_mode.equals("normal")) {
+            return;
+        }
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(Constants.PackMCMeta.NORMALMODEFOLDER + lang + ".json"));
+
+            main_lang_file = gson.fromJson(reader, HashMap.class);
+        }
+        catch(Exception e) {
+            log.info("Exception when reading json: " + e);
+        }
     }
 
     @Override
     public void handleRewardTables(List<RewardTable> rewardTables) {
         rewardTables.forEach(rewardTable -> {
             String textKey = HandlerHelper.getPrefix() + ".reward_table." + RewardTable.getCodeString(rewardTable);
-            textKey += AddOverrideNameIfNeeded(textKey, rewardTable.getRawTitle());
-            transKeys.put(textKey, rewardTable.getRawTitle());
-            rewardTable.setRawTitle("{" + textKey + "}");
+            if(ShouldAddLangKey(textKey, rewardTable.getRawTitle())) {
+                textKey += AddOverrideName();
+                transKeys.put(textKey, rewardTable.getRawTitle());
+                rewardTable.setRawTitle("{" + textKey + "}");
+            }
+            else {
+                rewardTable.setRawTitle("{" + textKey + "}");
+            }
         });
     }
 
@@ -46,9 +77,14 @@ public class Handler implements FtbQHandler {
         if(chapterGroup.getTitle() != null){
             if (!chapterGroup.getRawTitle().isEmpty()){
                 String textKey = HandlerHelper.getPrefix() + ".chapter_group." + ChapterGroup.getCodeString(chapterGroup);
-                textKey += AddOverrideNameIfNeeded(textKey, chapterGroup.getRawTitle());
-                transKeys.put(textKey, chapterGroup.getRawTitle());
-                chapterGroup.setRawTitle("{" + textKey + "}");
+                if(ShouldAddLangKey(textKey, chapterGroup.getRawTitle())) {
+                    textKey += AddOverrideName();
+                    transKeys.put(textKey, chapterGroup.getRawTitle());
+                    chapterGroup.setRawTitle("{" + textKey + "}");
+                }
+                else {
+                    chapterGroup.setRawTitle("{" + textKey + "}");
+                }
             }
         }
     }
@@ -58,19 +94,26 @@ public class Handler implements FtbQHandler {
         //HandlerHelper.setPrefix("ftbquests.chapter."+chapter.getFilename());
         String prefix = HandlerHelper.getPrefix() + ".chapter." + Chapter.getCodeString(chapter);
         if(chapter.getTitle() != null){
-            String title_prefix = prefix + AddOverrideNameIfNeeded(prefix + ".title", chapter.getRawTitle());
-            transKeys.put(title_prefix + ".title", chapter.getRawTitle());
-            chapter.setRawTitle("{" + title_prefix + ".title" + "}");
+            if(ShouldAddLangKey(prefix + ".title", chapter.getRawTitle())) {
+                String title_prefix = prefix + AddOverrideName();
+                transKeys.put(title_prefix + ".title", chapter.getRawTitle());
+                chapter.setRawTitle("{" + title_prefix + ".title" + "}");
+            }
+            else {
+                chapter.setRawTitle("{" + prefix + ".title" + "}");
+            }
         }
         if(!chapter.getRawSubtitle().isEmpty()){
-            String subtitle_prefix = prefix + AddOverrideNameIfNeeded(prefix + ".subtitle", String.join("\n", chapter.getRawSubtitle()));
-            transKeys.put(subtitle_prefix + ".subtitle", String.join("\n", chapter.getRawSubtitle()));
+            if(ShouldAddLangKey(prefix + ".subtitle", String.join("\n", chapter.getRawSubtitle()))) {
+                String subtitle_prefix = prefix + AddOverrideName();
+                transKeys.put(subtitle_prefix + ".subtitle", String.join("\n", chapter.getRawSubtitle()));
+            }
             try {
                 Field rawSubtitle = chapter.getClass().getDeclaredField("rawSubtitle");
                 rawSubtitle.setAccessible(true);
                 List<String> subTitleList = new ArrayList<>();
                 subTitleList.add("{" + prefix + ".subtitle" + "}");
-                rawSubtitle.set(chapter,subTitleList);
+                rawSubtitle.set(chapter, subTitleList);
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
@@ -80,18 +123,28 @@ public class Handler implements FtbQHandler {
     private void handleTasks(List<Task> tasks) {
         tasks.stream().filter(task -> !task.getRawTitle().isEmpty()).forEach(task -> {
             String textKey = HandlerHelper.getPrefix() + ".task." + Task.getCodeString(task);
-            textKey += AddOverrideNameIfNeeded(textKey, task.getRawTitle());
-            transKeys.put(textKey, task.getRawTitle());
-            task.setRawTitle("{" + textKey + "}");
+            if(ShouldAddLangKey(textKey, task.getRawTitle())) {
+                textKey += AddOverrideName();
+                transKeys.put(textKey, task.getRawTitle());
+                task.setRawTitle("{" + textKey + "}");
+            }
+            else {
+                task.setRawTitle("{" + textKey + "}");
+            }
         });
         HandlerHelper.setCounter(0);
     }
     private void handleRewards(List<Reward> rewards) {
         rewards.stream().filter(reward -> !reward.getRawTitle().isEmpty()).forEach(reward -> {
             String textKey = HandlerHelper.getPrefix() + ".reward." + Reward.getCodeString(reward);
-            textKey += AddOverrideNameIfNeeded(textKey, reward.getRawTitle());
-            transKeys.put(textKey, reward.getRawTitle());
-            reward.setRawTitle("{" + textKey + "}");
+            if(ShouldAddLangKey(textKey, reward.getRawTitle())) {
+                textKey += AddOverrideName();
+                transKeys.put(textKey, reward.getRawTitle());
+                reward.setRawTitle("{" + textKey + "}");
+            }
+            else {
+                reward.setRawTitle("{" + textKey + "}");
+            }
         });
         HandlerHelper.setCounter(0);
     }
@@ -103,15 +156,25 @@ public class Handler implements FtbQHandler {
             String prefix = HandlerHelper.getPrefix() + ".quest." + Quest.getCodeString(quest);
             if(quest.getTitle() != null){
                 if (!quest.getRawTitle().isEmpty()){
-                    String title_prefix = prefix + AddOverrideNameIfNeeded(prefix + ".title", quest.getRawTitle());
-                    transKeys.put(title_prefix + ".title", quest.getRawTitle());
-                    quest.setRawTitle("{" + title_prefix + ".title" + "}");
+                    if(ShouldAddLangKey(prefix + ".title", quest.getRawTitle())) {
+                        String title_prefix = prefix + ".title" + AddOverrideName();
+                        transKeys.put(title_prefix, quest.getRawTitle());
+                        quest.setRawTitle("{" + title_prefix + "}");
+                    }
+                    else {
+                        quest.setRawTitle("{" + prefix + ".title" + "}");
+                    }
                 }
             }
             if(!quest.getRawSubtitle().isEmpty()){
-                String subtitle_prefix = prefix + AddOverrideNameIfNeeded(prefix + ".subtitle", quest.getRawSubtitle());
-                transKeys.put(subtitle_prefix + ".subtitle", quest.getRawSubtitle());
-                quest.setRawSubtitle("{" + subtitle_prefix + ".subtitle" + "}");
+                if(ShouldAddLangKey(prefix + ".subtitle", quest.getRawSubtitle())) {
+                    String subtitle_prefix = prefix + ".subtitle" + AddOverrideName();
+                    transKeys.put(subtitle_prefix, quest.getRawSubtitle());
+                    quest.setRawSubtitle("{" + subtitle_prefix + "}");
+                }
+                else {
+                    quest.setRawSubtitle("{" + prefix + ".subtitle" + "}");
+                }
             }
             handleTasks(quest.getTasksAsList());
             handleRewards(quest.getRewards().stream().toList());
@@ -141,14 +204,19 @@ public class Handler implements FtbQHandler {
             else if(rich_desc_pattern.matcher(desc).find()){
                 HandlerHelper.addDescription();
                 Component parsedText = TextUtils.parseRawText(desc);
-                handleJSON.handleJSON(parsedText, prefix);
+                handleJSON.handleJSON(parsedText, prefix, this);
             }
             else {
                 HandlerHelper.addDescription();
                 String textKey = prefix + ".description" + HandlerHelper.getDescription();
-                textKey += AddOverrideNameIfNeeded(textKey, desc);
-                transKeys.put(textKey, desc);
-                HandlerHelper.descList.add("{" + textKey + "}");
+                if(ShouldAddLangKey(textKey, desc)) {
+                    textKey += AddOverrideName();
+                    transKeys.put(textKey, desc);
+                    HandlerHelper.descList.add("{" + textKey + "}");
+                }
+                else {
+                    HandlerHelper.descList.add("{" + textKey + "}");
+                }
             }
         });
         HandlerHelper.setDescription(0);
@@ -157,9 +225,14 @@ public class Handler implements FtbQHandler {
 
     private void handleDescriptionImage(String desc, String prefix) {
         String imgKey = prefix + ".image" + HandlerHelper.getImage();
-        imgKey += AddOverrideNameIfNeeded(imgKey, desc);
-        transKeys.put(imgKey, desc);
-        HandlerHelper.descList.add("{" + imgKey + "}");
+        if(ShouldAddLangKey(imgKey, desc)) {
+            imgKey += AddOverrideName();
+            transKeys.put(imgKey, desc);
+            HandlerHelper.descList.add("{" + imgKey + "}");
+        }
+        else {
+            HandlerHelper.descList.add("{" + imgKey + "}");
+        }
         HandlerHelper.addImage();
     }
 
@@ -169,18 +242,37 @@ public class Handler implements FtbQHandler {
      * `FALSE` otherwise
     */
     private Boolean SameInMainConfig(String id, String element) {
-        if(element.isEmpty() || element.equals(transKeys.get(id))) {
+        if(element.isEmpty() || element.equals(main_lang_file.get(id))) {
             return true;
         }
         return false;
     }
     /**
-     * Returns `current_folder` if the given element at given id is not the same in main quests config and Handler is currently not working in it.
+     * Returns `current_mode` if Handler is not currently working on the main config file ("normal").
     */
-    private String AddOverrideNameIfNeeded(String id, String element) {
-        if(current_folder != "config" && !SameInMainConfig(id, element)) {
-            return "." + current_folder;
+    public String AddOverrideName() {
+        if(current_mode.equals("normal")) {
+            return "";
+        }
+
+        return "." + current_mode;
+        /*
+        if(!SameInMainConfig(id, element)) {
+            return "." + current_mode;
         }
         return "";
+        */
+    }
+
+    public Boolean ShouldAddLangKey(String id, String element) {
+        if(current_mode.equals("normal")) {
+            return true;
+        }
+
+        if(SameInMainConfig(id, element)) {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -17,6 +17,6 @@ public class Constants {
         public static final String BACKUPFOLDER = "backup\\ftbquests\\quests";
         public static final String KUBEJSBACKUPFOLDER = "backup\\"+KUBEJSFOLDER;
         public static final String GAMEDIR = Platform.getGameFolder().toString();
-
+        public static final String NORMALMODEFOLDER = GAMEDIR + "\\" + OUTPUTFOLDER + "\\" + KUBEJSFOLDER;
     }
 }
