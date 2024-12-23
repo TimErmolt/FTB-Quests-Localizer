@@ -10,35 +10,27 @@ which is a fork of the now-archived [FTB Quest Language Generator](https://githu
 
 all distributed under the MIT license, as is this repository.
 
-### README.md has been machine translated from Simplified Chinese via Google Translate and, as such, may contain inaccuracies. Translation QA pending.
+> [!NOTE]
+> This mod is newly released. Please report unexpected behavior and technical issues.
 
-# How to use
+# What is different from the original FTB Quests Localizer?
 
-Enter the /ftblang <lang> command in the chat bar, such as /ftblang en_us;
+When exporting FTBQ elements to language files, FTBQL uses an arbitrary quests-by-chapter numbering system for naming the lang keys (e.g. "chapter1.quest1"). Some developers may find this inconvenient to work with, as determining which quest a given lang string is associated with can be tricky.
 
-Wait for the export path prompt to pop up on the screen, which means the export is successful;
+FTB Quests **Precision** Localizer instead uses a given element's hexadecimal ID, as it is presented in the code, to name the lang keys associated with it. Thus, the element can easily be found by searching through the quest files, as every FTBQ element is given a unique ID.
 
-Find and open the FTBLang folder according to the export path prompt, and overwrite the config/ftbquests in the game root directory;
+FTBQPL also supports modpacks with multiple available difficulties. See [the wiki](https://github.com/TimErmolt/FTB-Quests-Precision-Localizer/wiki) for details on using the mod. 
 
-If KubeJS is installed, copy the files in the kubeJS directory to the kubeJS directory in the game root directory;
+# Using the mod -- TL;DR
 
-If KubeJS is not installed, you can also choose to use resourcepack, and put the resource pack in the FTBLang directory into the resource pack folder in the game root directory.
+Install the latest release for your pack's Minecraft and Forge version, join any world and type in the following command:
 
-# Export directory
-<img src = "https://i.mcmod.cn/editor/upload/20240727/1722069732_703112_cUTy.png"/>
+```
+/ftblang <lang> <prefix> <mode>
+```
 
-The backup folder contains the original ftbquests file;
+- `<lang>.json` will be the name of the generated language file. See [this list](https://minecraft.wiki/w/Language) of languages available in Minecraft and the filenames associated with each;
 
-The config folder contains the exported ftbquests file;
+- All generated lang keys will start with `<prefix>` ("**ftbquests**" by default);
 
-The kubejs folder contains the kubejs-related language files;
-
-FTB-Quests-Localization-Resourcepack is the language resource pack file.
-
-# Subsequent operations
-
-You only need to translate the language file to complete the task translation.
-
-# Others
-
-Please provide feedback in time if there is any problem with missing extraction or rich text extraction.
+- `<mode>` is the current difficulty the pack is set to. **Use "normal" if your pack has no difficulty options.** Otherwise, please consult [the wiki](https://github.com/TimErmolt/FTB-Quests-Precision-Localizer/wiki) for a guide on using this argument.
