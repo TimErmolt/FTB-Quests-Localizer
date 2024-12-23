@@ -34,3 +34,5 @@ Install the latest release for your pack's Minecraft and Forge version, join any
 - All generated lang keys will start with `<prefix>` ("**ftbquests**" by default);
 
 - `<mode>` is the current difficulty the pack is set to. **Use "normal" if your pack has no difficulty options.** Otherwise, please consult [the wiki](https://github.com/TimErmolt/FTB-Quests-Precision-Localizer/wiki) for a guide on using this argument.
+
+A notification will appear above your hotbar indicating that the export is successful. All generated files will be available in the **FTBLang** folder located in your game instance's root folder.
